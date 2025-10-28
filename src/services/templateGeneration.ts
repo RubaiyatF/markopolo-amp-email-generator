@@ -103,11 +103,11 @@ export class TemplateGenerationService {
     const processedImages: ProcessedImage[] = [];
 
     for (const product of products) {
-      if (product.image) {
+      if (product.images?.[0]) {
         try {
           console.log(`🖼️  Processing image for: ${product.name}`);
           const processed = await imageProcessingService.processImage(
-            product.image,
+            product.images[0],
             product.id || (product.name || 'product').toLowerCase().replace(/\s+/g, '-'),
             {
               maxWidth: 1200,
@@ -121,10 +121,10 @@ export class TemplateGenerationService {
           console.error(`⚠️  Failed to process image for ${product.name}:`, error.message);
           // Fallback: Use original image
           processedImages.push({
-            original_url: product.image,
-            optimized_url: product.image,
-            webp_url: product.image,
-            thumbnail_url: product.image,
+            original_url: product.images[0],
+            optimized_url: product.images[0],
+            webp_url: product.images[0],
+            thumbnail_url: product.images[0],
             width: 0,
             height: 0,
             format: 'unknown',

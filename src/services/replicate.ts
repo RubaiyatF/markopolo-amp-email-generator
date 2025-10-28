@@ -192,7 +192,7 @@ Generate ONLY the AMP HTML template code, no explanations.`;
         "We think you'll love this!"}</p>
       
       <div class="product">
-        ${product.image ? `<amp-img src="${product.image}" width="400" height="300" layout="responsive"></amp-img>` : ''}
+        ${product.images?.[0] ? `<amp-img src="${product.images[0]}" width="400" height="300" layout="responsive"></amp-img>` : ''}
         <h2>${product.name || 'Premium Product'}</h2>
         <p>${product.description || 'An amazing product you\'ll love!'}</p>
         <p style="font-size: 24px; font-weight: bold; color: #4285f4;">

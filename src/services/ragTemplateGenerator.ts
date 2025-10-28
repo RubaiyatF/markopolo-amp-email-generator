@@ -156,7 +156,7 @@ export class RAGTemplateGenerator {
 <body>
   <div class="container">
     <div class="hero-section">
-      <amp-img src="${image?.webp_url || product.image || ''}"
+      <amp-img src="${image?.webp_url || product.images?.[0] || ''}"
                width="600" height="600"
                layout="responsive"
                alt="${product.name}"

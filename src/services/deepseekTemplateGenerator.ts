@@ -164,7 +164,7 @@ PRODUCT INFORMATION:
 - Name: ${product.name}
 - Price: ${product.price ? `${product.currency || 'USD'} $${product.price}` : 'Not available (hide pricing)'}
 - Description: ${product.description || 'Discover this exceptional product'}
-- Image URL: ${product.image || 'placeholder'}
+- Image URL: ${product.images?.[0] || 'placeholder'}
 - Product URL: ${product.url || '#'}
 ${product.brand ? `- Brand: ${product.brand}` : ''}
 
@@ -196,7 +196,7 @@ REQUIREMENTS:
 6. ${product.price && Number(product.price) > 0 ? 'Include pricing prominently' : 'DO NOT show pricing - price unavailable'}
 7. Mobile-responsive design (max-width: 600px container)
 8. Include prominent CTA button linking to: ${product.url || '#'}
-9. Use product image: ${product.image || 'placeholder'}
+9. Use product image: ${product.images?.[0] || 'placeholder'}
 10. Follow ${currentVariation.style} style with ${currentVariation.colorScheme}
 
 DESIGN GUIDELINES:
@@ -279,7 +279,7 @@ Generate the template now:`;
       <h1 style="margin: 0; font-size: 24px;">✨ Special Offer for You</h1>
     </div>
 
-    ${product.image ? `<amp-img src="${product.image}" width="600" height="600" layout="responsive" alt="${product.name}" class="hero-image"></amp-img>` : ''}
+    ${product.images?.[0] ? `<amp-img src="${product.images[0]}" width="600" height="600" layout="responsive" alt="${product.name}" class="hero-image"></amp-img>` : ''}
 
     <div class="content">
       <div class="greeting">Hi ${firstName}!</div>

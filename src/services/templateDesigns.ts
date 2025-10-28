@@ -82,7 +82,7 @@ export const heroImageDesign: TemplateDesign = {
   <div class="container">
     <div class="hero-section">
       ${discountBadge}
-      <amp-img src="${image?.webp_url || product.image || ''}"
+      <amp-img src="${image?.webp_url || product.images?.[0] || ''}"
                width="600" height="600"
                layout="responsive"
                alt="${product.name}">
@@ -183,7 +183,7 @@ export const minimalDesign: TemplateDesign = {
     </div>
 
     <div class="product-image">
-      <amp-img src="${image?.webp_url || product.image || ''}"
+      <amp-img src="${image?.webp_url || product.images?.[0] || ''}"
                width="400" height="400"
                layout="intrinsic"
                alt="${product.name}">
@@ -274,7 +274,7 @@ export const boldVibrantDesign: TemplateDesign = {
 
     <div class="product-showcase">
       <div class="product-image-container">
-        <amp-img src="${image?.webp_url || product.image || ''}"
+        <amp-img src="${image?.webp_url || product.images?.[0] || ''}"
                  width="600" height="600"
                  layout="responsive"
                  alt="${product.name}">

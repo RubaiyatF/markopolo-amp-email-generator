@@ -180,7 +180,7 @@ export class BrandAnalyzerService {
 
     for (const { $, html } of pageData) {
       // Extract colors from inline styles
-      $('[style*="color"]').each((_, el) => {
+      $('[style*="color"]').each((_: number, el: cheerio.Element) => {
         const style = $(el).attr('style') || '';
         const colors = this.extractColorsFromCSS(style);
         colors.forEach(color => {
@@ -190,7 +190,7 @@ export class BrandAnalyzerService {
       });
 
       // Extract colors from style tags
-      $('style').each((_, el) => {
+      $('style').each((_: number, el: cheerio.Element) => {
         const css = $(el).html() || '';
         const colors = this.extractColorsFromCSS(css);
         colors.forEach(color => {
@@ -355,7 +355,7 @@ export class BrandAnalyzerService {
 
     for (const { $ } of pageData) {
       // Extract heading fonts (h1-h3)
-      $('h1, h2, h3').each((_, el) => {
+      $('h1, h2, h3').each((_: number, el: cheerio.Element) => {
         const fontFamily = this.extractFontFamily($(el));
         if (fontFamily) {
           this.incrementFontUsage(fontUsages, fontFamily, 'heading');
@@ -363,7 +363,7 @@ export class BrandAnalyzerService {
       });
 
       // Extract body fonts (p, div, span)
-      $('p, div, span').slice(0, 50).each((_, el) => {
+      $('p, div, span').slice(0, 50).each((_: number, el: cheerio.Element) => {
         const fontFamily = this.extractFontFamily($(el));
         if (fontFamily) {
           this.incrementFontUsage(fontUsages, fontFamily, 'body');
@@ -543,11 +543,11 @@ export class BrandAnalyzerService {
 
     for (const { $ } of pageData) {
       // Analyze padding and margin in inline styles
-      $('[style*="padding"], [style*="margin"]').slice(0, 50).each((_, el) => {
+      $('[style*="padding"], [style*="margin"]').slice(0, 50).each((_: number, el: cheerio.Element) => {
         const style = $(el).attr('style') || '';
         const paddingMatch = style.match(/padding:\s*(\d+)px/);
         const marginMatch = style.match(/margin:\s*(\d+)px/);
-        
+
         if (paddingMatch) spacingValues.push(parseInt(paddingMatch[1]));
         if (marginMatch) spacingValues.push(parseInt(marginMatch[1]));
       });

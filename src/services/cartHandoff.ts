@@ -4,7 +4,7 @@
  */
 
 import { featureFlagService } from '../config/featureFlags';
-import { prisma } from '../lib/prisma';
+import prisma from '../lib/prisma';
 
 export interface CartSelections {
   productId: string;
