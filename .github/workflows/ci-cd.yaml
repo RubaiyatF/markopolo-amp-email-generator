@@ -61,9 +61,13 @@ jobs:
       run: npx prisma migrate deploy
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/amp_email_test
-    
+        DIRECT_URL: postgresql://postgres:postgres@localhost:5432/amp_email_test
+
     - name: Generate Prisma client
       run: npx prisma generate
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/amp_email_test
+        DIRECT_URL: postgresql://postgres:postgres@localhost:5432/amp_email_test
     
     - name: Run linter
       run: npm run lint || echo "Linter not configured"
@@ -76,6 +80,7 @@ jobs:
       env:
         NODE_ENV: test
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/amp_email_test
+        DIRECT_URL: postgresql://postgres:postgres@localhost:5432/amp_email_test
         REDIS_HOST: localhost
         REDIS_PORT: 6379
     
