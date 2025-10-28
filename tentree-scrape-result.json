@@ -1,0 +1,30 @@
+{
+  "product": {
+    "name": "Winslow T-Shirt",
+    "price": 0,
+    "currency": "USD",
+    "image": "https://storage.googleapis.com/markopolo-product-images/products/ec/5sqve/lKr/screenshot_0.jpg",
+    "url": "https://www.tentree.com/products/winslow-t-shirt-smokey-violet-heather",
+    "description": "Every Item Plants 10 Trees. Join Us in Protecting the World We Play In. We're on a mission to restore the planet by planting trees and creating Earth-First, sustainably made apparel. For each tentree item sold, we plant trees worldwide that capture carbon, restore ecosystems, protect wildlife habitats, and create jobs in communities that need them most. Our goal is to plant 1 billion trees with you by 2030. | Available colors: Smokey Violet Heather | Brand: Tentree",
+    "brand": "Tentree",
+    "id": "ec/5sqve/lKr"
+  },
+  "raw_response": {
+    "resourceId": "ec/5sqve/lKr",
+    "id": "ec/5sqve/lKr",
+    "name": "Winslow T-Shirt",
+    "source": "ml-service",
+    "description": "Every Item Plants 10 Trees. Join Us in Protecting the World We Play In. We're on a mission to restore the planet by planting trees and creating Earth-First, sustainably made apparel. For each tentree item sold, we plant trees worldwide that capture carbon, restore ecosystems, protect wildlife habitats, and create jobs in communities that need them most. Our goal is to plant 1 billion trees with you by 2030. | Available colors: Smokey Violet Heather | Brand: Tentree",
+    "url": "https://www.tentree.com/products/winslow-t-shirt-smokey-violet-heather",
+    "isRestrictionFlagged": false,
+    "price": null,
+    "discount": null,
+    "currency": "USD",
+    "images": [
+      "https://storage.googleapis.com/markopolo-product-images/products/ec/5sqve/lKr/screenshot_0.jpg"
+    ],
+    "enrichmentStatus": "complete"
+  },
+  "extraction_time_seconds": "12.01",
+  "images_count": 1
+}

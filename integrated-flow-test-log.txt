@@ -1,0 +1,172 @@
+🚀 Starting Integrated Flow Tests
+
+============================================================
+Product: Gymshark Element Baselayer
+Campaign: Product Launch
+============================================================
+
+TEST 1: Quick Flow (Template Only)
+============================================================
+🧪 Testing Quick Flow (without image generation)
+
+
+🚀 Starting Integrated Template Generation
+============================================================
+Product URL: https://uk.gymshark.com/products/gymshark-element-baselayer-mock-neck-long-sleeve-t-shirt-ls-tops-1
+Campaign: product_launch
+Generate Images: No
+============================================================
+
+📦 STEP 1: Scraping Product Data
+------------------------------------------------------------
+✅ Redis connected successfully
+✅ Cache hit for product: https://uk.gymshark.com/products/gymshark-element-baselayer-mock-neck-long-sleeve-t-shirt-ls-tops-1
+✅ Product scraped in 296ms
+   Name: Gymshark Element Baselayer Mock Neck Long Sleeve T-Shirt
+   Price: GBP 36
+   Brand: Uk
+   Screenshot: Available
+
+🎨 STEP 2: Generating Email Template
+------------------------------------------------------------
+✅ Gemini Template Generator initialized
+   Model: google/gemini-2.5-flash
+🧠 Generating template with Gemini (variation 0)...
+📚 Fetching similar template from RAG...
+🔍 Searching for templates matching campaign: product_launch
+✅ Qdrant client initialized
+   URL: https://87c4bedb-f2e4-4439-aadd-8387cf5643fc.us-east4-0.gcp.cloud.qdrant.io:6333
+   Collection: flodesk_templates
+[Qdrant] isAvailable check: configured=true, hasClient=true
+✅ OpenAI client initialized for embeddings
+   Model: text-embedding-3-small
+🔍 Found 1 similar templates
+✅ Found 1 similar templates
+   ✓ Found template: 003_announcement.png (score: 61.9%)
+✅ Template generated successfully
+   HTML Length: 4159 characters
+   Image Placeholders: 1
+   Processing Time: 7186ms
+✅ Template generated in 7186ms
+   HTML Length: 4159 characters
+   Image Placeholders: 1
+   RAG Template: 003_announcement.png
+
+ℹ️  STEP 3: Skipped (generateImages = false)
+
+============================================================
+✅ GENERATION COMPLETE!
+============================================================
+Total Time: 7482ms
+   Scraping: 296ms
+   Template: 7186ms
+============================================================
+
+
+✅ Quick generation successful!
+   Template: 4159 characters
+   Placeholders: 1
+   Time: 7482ms
+
+
+TEST 2: Full Flow (Template + Images)
+============================================================
+🧪 Testing Integrated Template Generation Flow
+
+Testing FULL flow (with AI image generation)...
+
+
+🚀 Starting Integrated Template Generation
+============================================================
+Product URL: https://uk.gymshark.com/products/gymshark-element-baselayer-mock-neck-long-sleeve-t-shirt-ls-tops-1
+Campaign: product_launch
+Generate Images: Yes
+============================================================
+
+📦 STEP 1: Scraping Product Data
+------------------------------------------------------------
+✅ Cache hit for product: https://uk.gymshark.com/products/gymshark-element-baselayer-mock-neck-long-sleeve-t-shirt-ls-tops-1
+✅ Product scraped in 86ms
+   Name: Gymshark Element Baselayer Mock Neck Long Sleeve T-Shirt
+   Price: GBP 36
+   Brand: Uk
+   Screenshot: Available
+
+🎨 STEP 2: Generating Email Template
+------------------------------------------------------------
+🧠 Generating template with Gemini (variation 0)...
+📚 Fetching similar template from RAG...
+🔍 Searching for templates matching campaign: product_launch
+[Qdrant] isAvailable check: configured=true, hasClient=true
+🔍 Found 1 similar templates
+✅ Found 1 similar templates
+   ✓ Found template: 003_announcement.png (score: 61.9%)
+✅ Template generated successfully
+   HTML Length: 3727 characters
+   Image Placeholders: 1
+   Processing Time: 7963ms
+✅ Template generated in 7963ms
+   HTML Length: 3727 characters
+   Image Placeholders: 1
+   RAG Template: 003_announcement.png
+
+🖼️  STEP 3: Generating Product Images
+------------------------------------------------------------
+✅ Gemini Image Generator initialized
+   Model: google/gemini-2.5-flash-image
+🎨 Generating 1 product images...
+   Product: Gymshark Element Baselayer Mock Neck Long Sleeve T-Shirt
+   Style: product shot
+   Generating image 1/1...
+   ✓ Image 1 generated
+✅ Generated 1/1 images
+✅ Images generated in 11847ms
+   Generated: 1 images
+
+🔄 STEP 4: Replacing Image Placeholders
+------------------------------------------------------------
+✅ Placeholders replaced
+
+============================================================
+✅ GENERATION COMPLETE!
+============================================================
+Total Time: 19897ms
+   Scraping: 86ms
+   Template: 7963ms
+   Images: 11847ms
+============================================================
+
+💾 Saving Results
+------------------------------------------------------------
+✓ Product data: integrated-product-data.json
+✓ Template: integrated-template.html (3727 chars)
+✓ Template with images: integrated-template-with-images.html (3725 chars)
+✓ Generated images: integrated-generated-images.json (1 images)
+✓ Metadata: integrated-metadata.json
+
+============================================================
+✅ TEST SUCCESSFUL!
+============================================================
+Summary:
+  Product: Gymshark Element Baselayer Mock Neck Long Sleeve T-Shirt
+  Brand: Uk
+  Price: GBP 36
+  RAG Template: 003_announcement.png
+  Image Placeholders: 1
+  Generated Images: 1
+  Total Time: 19897ms
+============================================================
+❌ Redis connection error: Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20) {
+  errno: -4077,
+  code: 'ECONNRESET',
+  syscall: 'read'
+}
+✅ Redis connected successfully
+❌ Redis connection error: Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20) {
+  errno: -4077,
+  code: 'ECONNRESET',
+  syscall: 'read'
+}
+✅ Redis connected successfully

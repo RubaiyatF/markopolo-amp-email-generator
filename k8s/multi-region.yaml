@@ -1,0 +1,163 @@
+# Multi-Region Deployment Configuration
+# Deploys AMP Email API to US-East (primary) and EU-West (secondary)
+
+---
+# US-East-1 Deployment (Primary)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: amp-email-api-us-east
+  namespace: production
+  labels:
+    app: amp-email-api
+    region: us-east-1
+    tier: primary
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: amp-email-api
+      region: us-east-1
+  template:
+    metadata:
+      labels:
+        app: amp-email-api
+        region: us-east-1
+        tier: primary
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: topology.kubernetes.io/region
+                operator: In
+                values:
+                - us-east-1
+      containers:
+      - name: api
+        image: amp-platform/api:latest
+        env:
+        - name: REGION
+          value: "us-east-1"
+        - name: PRIMARY_REGION
+          value: "us-east-1"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: amp-email-secrets-us-east
+              key: database-url
+        resources:
+          requests:
+            cpu: 500m
+            memory: 512Mi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+
+---
+# EU-West-1 Deployment (Secondary)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: amp-email-api-eu-west
+  namespace: production
+  labels:
+    app: amp-email-api
+    region: eu-west-1
+    tier: secondary
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: amp-email-api
+      region: eu-west-1
+  template:
+    metadata:
+      labels:
+        app: amp-email-api
+        region: eu-west-1
+        tier: secondary
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: topology.kubernetes.io/region
+                operator: In
+                values:
+                - eu-west-1
+      containers:
+      - name: api
+        image: amp-platform/api:latest
+        env:
+        - name: REGION
+          value: "eu-west-1"
+        - name: PRIMARY_REGION
+          value: "us-east-1"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: amp-email-secrets-eu-west
+              key: database-url
+        resources:
+          requests:
+            cpu: 500m
+            memory: 512Mi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+
+---
+# Global Load Balancer Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: amp-email-api-global
+  namespace: production
+  annotations:
+    cloud.google.com/backend-config: '{"default": "amp-email-backend-config"}'
+    cloud.google.com/neg: '{"ingress": true}'
+spec:
+  type: LoadBalancer
+  sessionAffinity: ClientIP
+  selector:
+    app: amp-email-api
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+
+---
+# Database Read Replica ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-replicas
+  namespace: production
+data:
+  us-east-1-primary: "postgres-primary-us-east.c9ab8c.us-east-1.rds.amazonaws.com:5432"
+  us-east-1-replica-1: "postgres-replica-1-us-east.c9ab8c.us-east-1.rds.amazonaws.com:5432"
+  us-east-1-replica-2: "postgres-replica-2-us-east.c9ab8c.us-east-1.rds.amazonaws.com:5432"
+  eu-west-1-replica: "postgres-replica-eu-west.c9ab8c.eu-west-1.rds.amazonaws.com:5432"
+
+---
+# Global Traffic Policy
+apiVersion: networking.gke.io/v1
+kind: MultiClusterService
+metadata:
+  name: amp-email-api-mcs
+  namespace: production
+spec:
+  template:
+    spec:
+      selector:
+        app: amp-email-api
+      ports:
+      - name: http
+        port: 80
+        targetPort: 3000
+  clusters:
+  - link: us-east-1/amp-email-cluster
+  - link: eu-west-1/amp-email-cluster

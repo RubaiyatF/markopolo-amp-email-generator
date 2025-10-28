@@ -1,0 +1,14 @@
+{
+  "variation": "A",
+  "productUrl": "https://uk.gymshark.com/products/gymshark-element-baselayer-mock-neck-long-sleeve-t-shirt-ls-tops-1",
+  "productName": "Gymshark Element Baselayer Mock Neck Long Sleeve T-Shirt",
+  "selectedTemplate": "046_619314043dec099518c8870d.png",
+  "imagePlaceholders": 1,
+  "generatedImages": 0,
+  "processingTime": 8601,
+  "steps": {
+    "scraping": 294,
+    "templateGeneration": 8307
+  },
+  "generatedAt": "2025-10-22T01:31:43.995Z"
+}

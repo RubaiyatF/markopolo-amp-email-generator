@@ -1,0 +1,1490 @@
+=============================================================================
+AMP INTERACTIVE SHOPPING EXPERIENCE - PHASE-BY-PHASE IMPLEMENTATION PLAN
+=============================================================================
+
+PROJECT OVERVIEW
+----------------
+Transform the existing AMP email template generation platform into an AI-powered
+interactive shopping experience builder with agent-based template generation,
+AI-enhanced product imagery, and seamless cart handoff.
+
+Target Timeline: 8-12 weeks
+Estimated Cost Budget: Development + AI services setup
+Team Size: 2-4 developers recommended
+
+
+=============================================================================
+PHASE 0: FOUNDATION & ASSESSMENT (Week 1)
+=============================================================================
+
+OBJECTIVES
+----------
+- Audit existing codebase and infrastructure
+- Set up development environment
+- Establish project baseline
+- Identify technical gaps
+
+TASKS
+-----
+□ 0.1 Codebase Audit
+  - Review existing scraper implementation (src/)
+  - Analyze current template generation logic
+  - Document existing API endpoints
+  - Identify reusable components
+  - Map current database schema
+
+□ 0.2 Infrastructure Assessment
+  - Verify PostgreSQL/Prisma setup
+  - Test Redis connectivity
+  - Confirm AWS S3/CDN configuration
+  - Review Kubernetes deployment setup
+  - Assess current monitoring/logging
+
+□ 0.3 External Service Setup
+  - Test Extract.pics API integration
+  - Verify Replicate API access
+  - Research image AI service options (Recraft, Stability AI)
+  - Document API rate limits and costs
+  - Set up test accounts and API keys
+
+□ 0.4 Development Environment
+  - Create feature branch: feature/interactive-shopping
+  - Set up local development environment
+  - Configure environment variables
+  - Create development database
+  - Set up testing framework (Jest)
+
+□ 0.5 Project Planning
+  - Create detailed task breakdown
+  - Set up project tracking (GitHub Projects, Jira)
+  - Define success metrics
+  - Establish code review process
+  - Schedule weekly sync meetings
+
+DELIVERABLES
+------------
+- Codebase audit document
+- Infrastructure assessment report
+- Development environment setup guide
+- Detailed project plan with milestones
+- Risk assessment document
+
+SUCCESS CRITERIA
+----------------
+✓ All existing services running locally
+✓ All external APIs tested and documented
+✓ Development environment fully configured
+✓ Team aligned on approach and timeline
+
+
+=============================================================================
+PHASE 1: DATA FOUNDATION (Week 2-3)
+=============================================================================
+
+OBJECTIVES
+----------
+- Enhance product scraper with variant extraction
+- Implement brand guidelines analyzer
+- Create enhanced data models
+- Set up caching infrastructure
+
+TASKS
+-----
+□ 1.1 Database Schema Extensions
+  - Create ProductVariant table (Prisma schema)
+  - Create BrandGuidelines table
+  - Create EnhancedImage table
+  - Create InteractiveTemplate table
+  - Add relationships and indexes
+  - Generate migrations
+  - Apply to development database
+
+□ 1.2 Enhanced Product Scraper
+  Location: src/services/scraper/
+
+  - Enhance existing scraper for deep variant extraction
+  - Add JSON-LD parser for structured data
+  - Implement OpenGraph metadata extraction
+  - Add shadow DOM traversal for dynamic content
+  - Create variant option parser (size, color, material)
+  - Add inventory extraction logic
+  - Implement product category detection
+  - Add feature and specification extraction
+  - Create comprehensive error handling
+  - Add request throttling/rate limiting
+
+  Files to create/modify:
+  - src/services/scraper/enhanced-scraper.service.ts
+  - src/services/scraper/parsers/jsonld.parser.ts
+  - src/services/scraper/parsers/opengraph.parser.ts
+  - src/services/scraper/parsers/variant.parser.ts
+  - src/services/scraper/utils/dom.utils.ts
+
+□ 1.3 Brand Guidelines Analyzer
+  Location: src/services/brand-analyzer/
+
+  - Create CSS parser for color extraction
+  - Implement color frequency analysis algorithm
+  - Build typography extraction system
+  - Add logo detection and extraction
+  - Create brand tone analyzer (NLP)
+  - Implement multi-page analysis crawler
+  - Add confidence scoring system
+  - Create brand guideline caching (7-day TTL)
+
+  Files to create:
+  - src/services/brand-analyzer/brand-analyzer.service.ts
+  - src/services/brand-analyzer/color-extractor.ts
+  - src/services/brand-analyzer/typography-extractor.ts
+  - src/services/brand-analyzer/tone-analyzer.ts
+  - src/services/brand-analyzer/logo-detector.ts
+  - src/types/brand-guidelines.types.ts
+
+□ 1.4 Data Models and Types
+  Location: src/types/
+
+  - Create enhanced-product.types.ts
+  - Create brand-guidelines.types.ts
+  - Create interactive-template.types.ts
+  - Create cart-selections.types.ts
+  - Create amp-component.types.ts
+  - Add validation schemas (Zod)
+
+□ 1.5 Caching Strategy
+  - Implement Redis caching for product data (24h TTL)
+  - Add brand guidelines caching (7-day TTL)
+  - Create cache key generation utilities
+  - Implement cache invalidation logic
+  - Add cache warming for popular products
+
+□ 1.6 API Endpoints - Data Layer
+  Location: src/routes/api/v1/
+
+  - POST /api/v1/brand/analyze
+  - GET /api/v1/products/:id/variants
+  - GET /api/v1/brand/:domain/guidelines
+  - Add request validation middleware
+  - Add response serialization
+  - Add error handling middleware
+
+TESTING
+-------
+- Unit tests for scraper parsers
+- Unit tests for brand analyzer components
+- Integration tests for database operations
+- API endpoint tests
+- Cache behavior tests
+
+DELIVERABLES
+------------
+- Enhanced product scraper service
+- Brand guidelines analyzer service
+- Updated database schema with migrations
+- Data model type definitions
+- API endpoints for data layer
+- Test suite with >80% coverage
+- Service documentation
+
+SUCCESS CRITERIA
+----------------
+✓ Scraper extracts variants from 3+ e-commerce platforms
+✓ Brand analyzer achieves >70% confidence on 10 test domains
+✓ All database operations working with caching
+✓ API endpoints return properly structured data
+✓ Test coverage >80% for new services
+
+
+=============================================================================
+PHASE 2: IMAGE ENHANCEMENT PIPELINE (Week 3-4)
+=============================================================================
+
+OBJECTIVES
+----------
+- Integrate image extraction API
+- Implement AI background removal
+- Build background regeneration system
+- Create image labeling service
+- Set up CDN pipeline
+
+TASKS
+-----
+□ 2.1 Image Extraction Integration
+  Location: src/services/image-extraction/
+
+  - Integrate Extract.pics API
+  - Implement fallback IMG tag scraping
+  - Add image quality filtering (>800px width)
+  - Create image categorization logic (hero, gallery, lifestyle)
+  - Add metadata extraction (alt text, captions)
+  - Implement image prioritization algorithm
+
+  Files to create:
+  - src/services/image-extraction/image-extractor.service.ts
+  - src/services/image-extraction/image-classifier.ts
+  - src/services/image-extraction/quality-filter.ts
+
+□ 2.2 AI Background Removal
+  Location: src/services/image-ai/
+
+  - Research and select AI service (Recraft, remove.bg, Replicate)
+  - Implement API integration
+  - Add subject isolation logic
+  - Create quality assessment system
+  - Implement fallback to original on failure
+  - Add batch processing support
+  - Optimize for cost (cache results)
+
+  Files to create:
+  - src/services/image-ai/background-removal.service.ts
+  - src/services/image-ai/subject-isolator.ts
+  - src/services/image-ai/quality-assessor.ts
+
+□ 2.3 Background Regeneration
+  Location: src/services/image-ai/
+
+  - Implement background style selection logic
+  - Create professional style generator (white/gradient)
+  - Create lifestyle style generator (contextual scenes)
+  - Create premium style generator (luxury settings)
+  - Add seasonal variation support
+  - Implement prompt engineering for AI models
+  - Add result caching
+
+  Files to create:
+  - src/services/image-ai/background-generator.service.ts
+  - src/services/image-ai/style-selector.ts
+  - src/services/image-ai/prompt-builder.ts
+
+□ 2.4 Image Labeling Service
+  Location: src/services/image-labeling/
+
+  - Create label overlay generator
+  - Implement product name label
+  - Add dynamic price tag
+  - Create discount badge system
+  - Add feature highlight banners
+  - Implement "New Arrival" ribbon
+  - Add "Low Stock" urgency indicator
+  - Use canvas/sharp for image manipulation
+  - Apply brand fonts to labels
+
+  Files to create:
+  - src/services/image-labeling/label-generator.service.ts
+  - src/services/image-labeling/overlay-renderer.ts
+  - src/services/image-labeling/badge-creator.ts
+
+□ 2.5 CDN Upload Pipeline
+  Location: src/services/cdn/
+
+  - Enhance existing S3 upload service
+  - Add image optimization (WebP conversion)
+  - Implement responsive image generation (srcset)
+  - Add CloudFront integration
+  - Create CDN URL generator
+  - Implement batch upload
+  - Add upload retry logic
+  - Track CDN costs
+
+  Files to update/create:
+  - src/services/cdn/s3-upload.service.ts
+  - src/services/cdn/image-optimizer.ts
+  - src/services/cdn/srcset-generator.ts
+
+□ 2.6 Image Processing Pipeline Orchestrator
+  Location: src/services/image-pipeline/
+
+  - Create pipeline orchestrator
+  - Implement sequential processing flow
+  - Add parallel processing for multiple images
+  - Create progress tracking
+  - Add error recovery mechanisms
+  - Implement cost tracking per image
+
+  Files to create:
+  - src/services/image-pipeline/pipeline-orchestrator.service.ts
+  - src/services/image-pipeline/processing-queue.ts
+
+□ 2.7 API Endpoints - Image Layer
+  - POST /api/v1/images/enhance
+  - GET /api/v1/images/:id/status
+  - GET /api/v1/images/:id/metadata
+  - Add streaming progress updates (SSE)
+
+TESTING
+-------
+- Unit tests for each image processing component
+- Integration tests for full pipeline
+- Cost tracking validation
+- Performance benchmarks (target <5s per image)
+- Quality assessment tests
+- CDN upload tests
+
+DELIVERABLES
+------------
+- Complete image enhancement pipeline
+- Background removal integration
+- Image labeling service
+- CDN upload automation
+- API endpoints for image processing
+- Cost tracking system
+- Documentation with example outputs
+
+SUCCESS CRITERIA
+----------------
+✓ Background removal works on 90%+ of product images
+✓ Image processing completes in <5 seconds per image
+✓ Labels render correctly with brand fonts
+✓ Images uploaded to CDN with proper caching
+✓ Cost per image <$0.005
+✓ Pipeline handles failures gracefully
+
+
+=============================================================================
+PHASE 3: AGENT SYSTEM FOUNDATION (Week 5-6)
+=============================================================================
+
+OBJECTIVES
+----------
+- Design agent architecture
+- Implement agent orchestrator
+- Create knowledge bases
+- Build agent communication system
+
+TASKS
+-----
+□ 3.1 Agent System Architecture
+  Location: src/services/agents/
+
+  - Design agent interface and contracts
+  - Create base agent class
+  - Define agent communication protocol
+  - Design state management system
+  - Create agent registry
+
+  Files to create:
+  - src/services/agents/core/base-agent.ts
+  - src/services/agents/core/agent-interface.ts
+  - src/services/agents/core/agent-orchestrator.ts
+  - src/services/agents/core/agent-registry.ts
+  - src/types/agent.types.ts
+
+□ 3.2 Knowledge Bases
+  Location: src/services/agents/knowledge/
+
+  - Create AMP Component Catalog (JSON/DB)
+  - Build Brand Pattern Library
+  - Document Shopping UX Patterns
+  - Compile Template Best Practices
+  - Create searchable knowledge index
+  - Add knowledge base query system
+
+  Files to create:
+  - src/services/agents/knowledge/amp-components.json
+  - src/services/agents/knowledge/ux-patterns.json
+  - src/services/agents/knowledge/knowledge-base.service.ts
+  - src/services/agents/knowledge/query-engine.ts
+
+□ 3.3 Agent Orchestrator
+  Location: src/services/agents/core/
+
+  - Implement agent lifecycle management
+  - Create agent task queue
+  - Build agent communication bus
+  - Add state synchronization
+  - Implement error handling and retries
+  - Add agent performance monitoring
+  - Create agent decision logging
+
+  Files to create:
+  - src/services/agents/core/orchestrator.service.ts
+  - src/services/agents/core/task-queue.ts
+  - src/services/agents/core/communication-bus.ts
+  - src/services/agents/core/state-manager.ts
+
+□ 3.4 LLM Integration Layer
+  Location: src/services/llm/
+
+  - Integrate OpenAI API (GPT-4 for agents)
+  - Add Anthropic Claude as fallback
+  - Create prompt templates
+  - Implement context management
+  - Add token counting and cost tracking
+  - Create response parsing utilities
+  - Add streaming support
+
+  Files to create:
+  - src/services/llm/openai.service.ts
+  - src/services/llm/claude.service.ts
+  - src/services/llm/prompt-templates.ts
+  - src/services/llm/context-manager.ts
+  - src/services/llm/cost-tracker.ts
+
+□ 3.5 Agent Decision Framework
+  - Create decision tree data structure
+  - Implement rule-based decision system
+  - Add ML-based component selection
+  - Create decision logging system
+  - Build decision replay for debugging
+
+TESTING
+-------
+- Unit tests for agent base classes
+- Integration tests for orchestrator
+- LLM integration tests (with mocks)
+- Knowledge base query tests
+- Agent communication tests
+
+DELIVERABLES
+------------
+- Agent system architecture
+- Agent orchestrator implementation
+- Knowledge bases populated
+- LLM integration layer
+- Agent communication system
+- Decision framework
+- Documentation
+
+SUCCESS CRITERIA
+----------------
+✓ Agent orchestrator manages 4+ agents
+✓ Agents communicate via message bus
+✓ Knowledge bases queryable
+✓ LLM integration working with cost tracking
+✓ Decision logging captures all choices
+✓ System handles agent failures gracefully
+
+
+=============================================================================
+PHASE 4: SPECIALIZED AGENTS IMPLEMENTATION (Week 6-8)
+=============================================================================
+
+OBJECTIVES
+----------
+- Build Template Architect Agent
+- Create Component Builder Agent
+- Implement Style Generator Agent
+- Develop Validation Agent
+
+TASKS
+-----
+□ 4.1 Template Architect Agent
+  Location: src/services/agents/template-architect/
+
+  - Analyze product data structure
+  - Determine product type classification
+  - Select template pattern (hero, grid, step builder, etc.)
+  - Design component hierarchy
+  - Plan user journey flow
+  - Create layout blueprint
+  - Calculate interactivity requirements
+
+  Files to create:
+  - src/services/agents/template-architect/architect-agent.ts
+  - src/services/agents/template-architect/product-analyzer.ts
+  - src/services/agents/template-architect/pattern-selector.ts
+  - src/services/agents/template-architect/layout-planner.ts
+  - src/services/agents/template-architect/journey-designer.ts
+
+  Prompts to create:
+  - Product type classification prompt
+  - Pattern selection reasoning prompt
+  - Layout optimization prompt
+  - Component hierarchy design prompt
+
+□ 4.2 Component Builder Agent
+  Location: src/services/agents/component-builder/
+
+  - Generate amp-carousel structures
+  - Build amp-selector for variants
+  - Create amp-bind state definitions
+  - Generate dynamic pricing expressions
+  - Build add-to-cart components
+  - Create amp-list for inventory
+  - Generate amp-accordion for details
+  - Build cart handoff deep links
+
+  Files to create:
+  - src/services/agents/component-builder/builder-agent.ts
+  - src/services/agents/component-builder/carousel-builder.ts
+  - src/services/agents/component-builder/selector-builder.ts
+  - src/services/agents/component-builder/state-builder.ts
+  - src/services/agents/component-builder/pricing-builder.ts
+  - src/services/agents/component-builder/cart-builder.ts
+  - src/services/agents/component-builder/amp-templates.ts
+
+  Component Templates:
+  - amp-carousel template
+  - amp-selector template
+  - amp-bind state template
+  - amp-list template
+  - Deep link generator
+
+□ 4.3 Style Generator Agent
+  Location: src/services/agents/style-generator/
+
+  - Apply brand color palette
+  - Generate typography system
+  - Create spacing/layout grid
+  - Build responsive breakpoints
+  - Add micro-interactions
+  - Generate CSS variables
+  - Create email-safe CSS
+  - Apply accessibility standards
+
+  Files to create:
+  - src/services/agents/style-generator/style-agent.ts
+  - src/services/agents/style-generator/color-applicator.ts
+  - src/services/agents/style-generator/typography-system.ts
+  - src/services/agents/style-generator/layout-grid.ts
+  - src/services/agents/style-generator/responsive-generator.ts
+  - src/services/agents/style-generator/css-generator.ts
+
+  Style Templates:
+  - Brand color CSS variables
+  - Typography scale system
+  - Responsive grid system
+  - Component style templates
+
+□ 4.4 Validation Agent
+  Location: src/services/agents/validator/
+
+  - Validate AMP specification compliance
+  - Check email client compatibility
+  - Test amp-bind expressions
+  - Verify accessibility (WCAG AA)
+  - Validate image attributes
+  - Check external resource security
+  - Test fallback HTML
+  - Generate validation report
+  - Suggest fixes for issues
+
+  Files to create:
+  - src/services/agents/validator/validator-agent.ts
+  - src/services/agents/validator/amp-validator.ts
+  - src/services/agents/validator/email-client-tester.ts
+  - src/services/agents/validator/accessibility-checker.ts
+  - src/services/agents/validator/security-validator.ts
+  - src/services/agents/validator/fix-suggester.ts
+
+  Validation Rules:
+  - AMP specification checklist
+  - Email client compatibility matrix
+  - Accessibility requirements
+  - Security policy checks
+
+□ 4.5 Agent Integration
+  - Connect all agents to orchestrator
+  - Implement agent-to-agent communication
+  - Add state sharing between agents
+  - Create feedback loops (validation → builder)
+  - Implement retry logic with fixes
+
+TESTING
+-------
+- Unit tests for each agent
+- Integration tests for agent workflows
+- End-to-end tests with real product data
+- Performance benchmarks
+- Cost tracking per agent
+- Decision quality assessment
+
+DELIVERABLES
+------------
+- Template Architect Agent
+- Component Builder Agent
+- Style Generator Agent
+- Validation Agent
+- Agent integration
+- Prompt templates library
+- Test suite
+- Agent documentation
+
+SUCCESS CRITERIA
+----------------
+✓ Each agent completes its specialized task
+✓ Agents communicate effectively
+✓ Template generation works end-to-end
+✓ Validation catches common issues
+✓ Agent cost per generation <$0.005
+✓ Generation time <8 seconds total
+
+
+=============================================================================
+PHASE 5: CART HANDOFF SYSTEM (Week 8-9)
+=============================================================================
+
+OBJECTIVES
+----------
+- Build smart landing page
+- Implement cart selection encoding
+- Create platform-specific integrations
+- Add fallback mechanisms
+
+TASKS
+-----
+□ 5.1 Cart Selection Encoding
+  Location: src/services/cart-handoff/
+
+  - Implement compact JSON encoding
+  - Add base64 encoding utility
+  - Create URL parameter builder
+  - Implement LZ-string compression
+  - Add URL shortener integration (optional)
+  - Create session storage service (optional)
+  - Add encoding cost optimization
+
+  Files to create:
+  - src/services/cart-handoff/encoder.service.ts
+  - src/services/cart-handoff/url-builder.ts
+  - src/services/cart-handoff/compressor.ts
+  - src/services/cart-handoff/url-shortener.service.ts
+  - src/services/cart-handoff/session-storage.service.ts
+
+□ 5.2 Smart Landing Page
+  Location: landing-page/ (new directory)
+
+  - Create standalone HTML page
+  - Implement URL parameter parser
+  - Add base64 decoder
+  - Create loading animation
+  - Build platform detector
+  - Implement error handling UI
+  - Add analytics tracking
+  - Make mobile responsive
+
+  Files to create:
+  - landing-page/index.html
+  - landing-page/js/decoder.js
+  - landing-page/js/platform-detector.js
+  - landing-page/js/cart-executor.js
+  - landing-page/css/styles.css
+  - landing-page/js/analytics.js
+
+□ 5.3 Platform Integrations
+  Location: landing-page/js/platforms/
+
+  - Implement Shopify Ajax API integration
+  - Create WooCommerce form submission
+  - Add Magento cart controller integration
+  - Build BigCommerce integration
+  - Create generic fallback handler
+  - Add CORS handling
+  - Implement retry logic
+
+  Files to create:
+  - landing-page/js/platforms/shopify.js
+  - landing-page/js/platforms/woocommerce.js
+  - landing-page/js/platforms/magento.js
+  - landing-page/js/platforms/bigcommerce.js
+  - landing-page/js/platforms/generic.js
+
+□ 5.4 Platform Detection Logic
+  - Create domain pattern matching
+  - Add URL structure analysis
+  - Implement confidence scoring
+  - Add manual platform override
+  - Create detection test suite
+
+  Platform signatures:
+  - Shopify: .myshopify.com, /cart/add.js
+  - WooCommerce: /wp-content/, ?add-to-cart=
+  - Magento: /catalog/product/
+  - BigCommerce: .mybigcommerce.com
+
+□ 5.5 Landing Page Deployment
+  - Deploy to Vercel/Netlify (serverless)
+  - Configure custom domain
+  - Set up CDN caching
+  - Add SSL certificate
+  - Configure CORS policies
+  - Set up monitoring
+
+□ 5.6 API Integration
+  Location: src/routes/api/v1/cart/
+
+  - POST /api/v1/cart/encode
+  - POST /api/v1/cart/shorten (optional)
+  - POST /api/v1/cart/session (optional)
+  - GET /api/v1/cart/session/:id
+  - Add analytics endpoints
+
+TESTING
+-------
+- Unit tests for encoding/decoding
+- Integration tests for each platform
+- Browser compatibility tests
+- Mobile responsiveness tests
+- Error handling tests
+- Performance tests (target <5s)
+- Security tests (XSS, injection)
+
+DELIVERABLES
+------------
+- Cart selection encoding service
+- Smart landing page (deployed)
+- Platform-specific integrations
+- Fallback mechanisms
+- API endpoints
+- Analytics tracking
+- Documentation
+
+SUCCESS CRITERIA
+----------------
+✓ Encoding/decoding works reliably
+✓ Landing page loads in <1 second
+✓ Shopify integration success rate >90%
+✓ WooCommerce integration functional
+✓ Total cart handoff time <5 seconds
+✓ Fallback works for unsupported platforms
+✓ Mobile experience smooth
+
+
+=============================================================================
+PHASE 6: MAIN API ENDPOINT INTEGRATION (Week 9-10)
+=============================================================================
+
+OBJECTIVES
+----------
+- Build primary generation endpoint
+- Integrate all services into workflow
+- Implement error recovery
+- Add monitoring and logging
+
+TASKS
+-----
+□ 6.1 Main API Endpoint
+  Location: src/routes/api/v1/interactive/
+
+  - POST /api/v1/interactive/generate
+  - Implement request validation (Zod schemas)
+  - Add authentication/authorization
+  - Create workflow orchestration
+  - Implement parallel data collection
+  - Add progress tracking
+  - Create streaming response (SSE)
+  - Add timeout handling
+  - Implement cost tracking
+
+  Files to create:
+  - src/routes/api/v1/interactive/generate.route.ts
+  - src/routes/api/v1/interactive/generate.controller.ts
+  - src/services/interactive/generation-orchestrator.service.ts
+  - src/services/interactive/progress-tracker.ts
+  - src/services/interactive/workflow-manager.ts
+
+□ 6.2 Workflow Orchestration
+  Location: src/services/interactive/
+
+  - Stage 1: Parallel data collection (scraper + images)
+  - Stage 2: Image enhancement pipeline
+  - Stage 3: Agent template generation
+  - Stage 4: Validation and corrections
+  - Stage 5: CDN upload and delivery
+  - Add stage timing tracking
+  - Implement stage-level retry
+  - Add circuit breakers for external services
+
+  Files to create:
+  - src/services/interactive/workflow-stages.ts
+  - src/services/interactive/stage-executor.ts
+  - src/services/interactive/circuit-breaker.ts
+
+□ 6.3 Error Recovery System
+  - Implement graceful degradation
+  - Add fallback for image enhancement (use originals)
+  - Add fallback for brand analysis (use defaults)
+  - Create retry queue for failed generations
+  - Add error notification system
+  - Log all errors with context
+
+  Files to create:
+  - src/services/interactive/error-recovery.service.ts
+  - src/services/interactive/fallback-handler.ts
+  - src/services/interactive/retry-queue.ts
+
+□ 6.4 Response Serialization
+  - Create response builder
+  - Add template compression
+  - Implement partial response on timeout
+  - Add response caching
+  - Create webhook for async completion
+
+  Files to create:
+  - src/services/interactive/response-builder.service.ts
+  - src/services/interactive/response-cache.ts
+
+□ 6.5 Cost Tracking and Analytics
+  - Track cost per generation
+  - Break down by service (scraper, images, agents, CDN)
+  - Log generation metrics
+  - Create cost alerts
+  - Build analytics dashboard queries
+
+  Files to create:
+  - src/services/analytics/cost-tracker.service.ts
+  - src/services/analytics/metrics-logger.service.ts
+  - src/services/analytics/alert-service.ts
+
+□ 6.6 Monitoring and Observability
+  - Add structured JSON logging
+  - Implement correlation IDs
+  - Create performance tracking
+  - Add Sentry/error reporting
+  - Set up Datadog/monitoring dashboards
+  - Create health check endpoint
+
+  Files to create:
+  - src/middleware/logging.middleware.ts
+  - src/middleware/correlation-id.middleware.ts
+  - src/services/monitoring/performance-tracker.ts
+  - src/routes/health.route.ts
+
+TESTING
+-------
+- End-to-end API tests
+- Workflow integration tests
+- Error recovery tests
+- Performance/load tests
+- Cost validation tests
+- Monitoring validation
+
+DELIVERABLES
+------------
+- Main generation API endpoint
+- Complete workflow orchestration
+- Error recovery system
+- Cost tracking implementation
+- Monitoring and logging
+- Health check endpoint
+- Documentation
+
+SUCCESS CRITERIA
+----------------
+✓ API generates complete interactive template
+✓ End-to-end generation completes in <15 seconds
+✓ Error recovery works for common failures
+✓ Cost tracking accurate within 5%
+✓ Monitoring captures all key metrics
+✓ Health checks validate system status
+
+
+=============================================================================
+PHASE 7: TESTING & VALIDATION (Week 10-11)
+=============================================================================
+
+OBJECTIVES
+----------
+- Comprehensive testing across all layers
+- Validate with real e-commerce sites
+- Performance optimization
+- Security audit
+
+TASKS
+-----
+□ 7.1 Unit Testing
+  - Achieve >80% code coverage
+  - Test all services in isolation
+  - Mock external dependencies
+  - Test error scenarios
+  - Add edge case tests
+
+  Target coverage:
+  - Services: >85%
+  - Agents: >80%
+  - API routes: >90%
+  - Utilities: >95%
+
+□ 7.2 Integration Testing
+  - Test complete workflow end-to-end
+  - Test with 10+ different e-commerce sites
+  - Test across platforms (Shopify, WooCommerce, Magento)
+  - Test different product types
+  - Test brand analyzer accuracy
+  - Test image pipeline quality
+  - Test agent decision quality
+
+  Test sites:
+  - Shopify stores (3+)
+  - WooCommerce stores (3+)
+  - Magento stores (2+)
+  - Custom platforms (2+)
+
+□ 7.3 Email Client Testing
+  - Test in Gmail (desktop + mobile)
+  - Test in Yahoo Mail
+  - Test in Outlook (desktop + web)
+  - Test in Apple Mail
+  - Verify AMP interactivity works
+  - Verify fallback HTML renders
+  - Test across devices
+
+  Testing tools:
+  - Litmus/Email on Acid
+  - Manual testing
+  - Automation with Puppeteer
+
+□ 7.4 Performance Testing
+  - Load testing (50 req/sec sustained)
+  - Stress testing (200+ req/sec peak)
+  - Latency measurement (p50, p95, p99)
+  - Resource utilization monitoring
+  - Database query optimization
+  - Redis cache hit rate analysis
+  - CDN performance validation
+
+  Tools:
+  - Apache JMeter / k6
+  - New Relic / Datadog
+  - PostgreSQL EXPLAIN ANALYZE
+
+□ 7.5 Security Testing
+  - OWASP Top 10 vulnerability scan
+  - SQL injection testing
+  - XSS attack testing
+  - CSRF protection validation
+  - API authentication testing
+  - Rate limiting validation
+  - Input validation testing
+  - Secret management audit
+
+  Tools:
+  - OWASP ZAP
+  - Snyk security scan
+  - npm audit
+
+□ 7.6 Accessibility Testing
+  - WCAG 2.1 Level AA compliance
+  - Screen reader testing
+  - Keyboard navigation
+  - Color contrast validation
+  - Alt text verification
+  - ARIA label checking
+
+  Tools:
+  - axe DevTools
+  - WAVE
+  - Manual testing
+
+□ 7.7 Cost Validation
+  - Track actual costs per generation
+  - Validate against targets (<$0.02)
+  - Optimize expensive operations
+  - Implement cost alerts
+  - Create cost projection models
+
+□ 7.8 Quality Assurance
+  - Manual review of 50+ generated templates
+  - Verify brand consistency
+  - Check component quality
+  - Validate agent decisions
+  - Test user experience flow
+  - Gather stakeholder feedback
+
+DELIVERABLES
+------------
+- Complete test suite
+- Test coverage reports
+- Email client compatibility matrix
+- Performance benchmark results
+- Security audit report
+- Accessibility compliance report
+- Cost analysis document
+- QA feedback summary
+
+SUCCESS CRITERIA
+----------------
+✓ Test coverage >80% overall
+✓ All integration tests passing
+✓ AMP works in Gmail and Yahoo
+✓ API handles 50 req/sec sustained load
+✓ p95 latency <15 seconds
+✓ No critical security vulnerabilities
+✓ WCAG AA compliance achieved
+✓ Cost per generation <$0.02
+
+
+=============================================================================
+PHASE 8: DEPLOYMENT & LAUNCH (Week 11-12)
+=============================================================================
+
+OBJECTIVES
+----------
+- Production deployment
+- Monitoring setup
+- Documentation completion
+- Soft launch with monitoring
+
+TASKS
+-----
+□ 8.1 Production Environment Setup
+  - Create production Kubernetes namespace
+  - Configure production database
+  - Set up production Redis cluster
+  - Configure production S3 bucket
+  - Set up CloudFront distribution
+  - Configure environment variables
+  - Set up secrets management (Vault/AWS Secrets Manager)
+  - Configure autoscaling rules (HPA)
+
+□ 8.2 CI/CD Pipeline
+  - Create GitHub Actions workflows
+  - Add automated testing stage
+  - Add security scanning stage
+  - Add Docker image build
+  - Add Kubernetes deployment stage
+  - Implement blue-green deployment
+  - Add rollback mechanism
+
+  Stages:
+  1. Test
+  2. Security scan
+  3. Build Docker image
+  4. Push to registry
+  5. Deploy to staging
+  6. Smoke tests
+  7. Deploy to production
+  8. Health check validation
+
+□ 8.3 Monitoring and Alerting
+  - Set up Datadog/New Relic dashboards
+  - Configure error rate alerts
+  - Add latency alerts (>30s p95)
+  - Add cost threshold alerts
+  - Create availability alerts
+  - Set up Slack/PagerDuty notifications
+  - Create runbook for common issues
+
+  Key metrics:
+  - Request rate and error rate
+  - Response time (p50, p95, p99)
+  - Generation success rate
+  - Cost per generation
+  - Cache hit rates
+  - External API health
+  - Database connection pool
+  - Memory and CPU usage
+
+□ 8.4 Logging Infrastructure
+  - Set up centralized logging (ELK/Cloudwatch)
+  - Configure log retention policies
+  - Create log analysis dashboards
+  - Set up log-based alerts
+  - Add correlation ID tracking
+  - Enable distributed tracing (Jaeger)
+
+□ 8.5 Documentation
+  - API documentation (OpenAPI/Swagger)
+  - Architecture documentation
+  - Deployment guide
+  - Runbook for operations
+  - Troubleshooting guide
+  - Cost optimization guide
+  - Agent decision documentation
+  - Testing guide
+
+  Documents to create:
+  - API_REFERENCE.md
+  - ARCHITECTURE.md
+  - DEPLOYMENT_GUIDE.md
+  - OPERATIONS_RUNBOOK.md
+  - TROUBLESHOOTING.md
+  - COST_OPTIMIZATION.md
+  - AGENT_DECISIONS.md
+
+□ 8.6 Staging Deployment
+  - Deploy to staging environment
+  - Run smoke tests
+  - Test with real traffic (10%)
+  - Monitor for 48 hours
+  - Validate costs
+  - Collect feedback
+  - Fix any issues
+
+□ 8.7 Production Deployment
+  - Deploy to production with feature flag OFF
+  - Enable for internal testing
+  - Gradual rollout (5% → 25% → 50% → 100%)
+  - Monitor metrics closely
+  - Watch error rates and costs
+  - Be ready to rollback
+
+  Rollout plan:
+  Day 1: 5% traffic, internal testing
+  Day 2-3: 25% traffic, monitor metrics
+  Day 4-5: 50% traffic, validate performance
+  Day 6-7: 100% traffic, full launch
+
+□ 8.8 Post-Launch Monitoring
+  - Monitor for 2 weeks intensively
+  - Track success metrics
+  - Collect user feedback
+  - Analyze cost data
+  - Review agent decisions
+  - Identify optimization opportunities
+  - Create improvement backlog
+
+□ 8.9 Training and Handoff
+  - Train support team
+  - Create customer-facing documentation
+  - Set up feedback channels
+  - Establish SLAs
+  - Define escalation process
+  - Document known issues
+
+DELIVERABLES
+------------
+- Production deployment
+- CI/CD pipeline
+- Monitoring dashboards
+- Alerting system
+- Complete documentation
+- Training materials
+- Launch report
+
+SUCCESS CRITERIA
+----------------
+✓ Production deployment successful
+✓ No critical issues in first week
+✓ All monitoring and alerts working
+✓ Documentation complete and published
+✓ API serving production traffic
+✓ Success rate >95%
+✓ Cost within budget
+✓ Team trained and ready
+
+
+=============================================================================
+ONGOING: OPTIMIZATION & ITERATION (Week 12+)
+=============================================================================
+
+OBJECTIVES
+----------
+- Optimize costs
+- Improve quality
+- Add new features
+- Scale infrastructure
+
+CONTINUOUS IMPROVEMENT TASKS
+-----------------------------
+□ Cost Optimization
+  - Analyze generation cost breakdown
+  - Optimize AI model selection
+  - Improve caching strategies
+  - Reduce CDN bandwidth
+  - Optimize image processing
+  - Batch operations where possible
+  - Target: <$0.015 per generation
+
+□ Quality Improvements
+  - Review agent decisions weekly
+  - A/B test different prompts
+  - Improve brand analyzer accuracy
+  - Enhance image labeling
+  - Refine component selection
+  - Collect user feedback
+  - Implement improvements
+
+□ Performance Optimization
+  - Optimize database queries
+  - Improve caching hit rates
+  - Reduce external API calls
+  - Optimize image processing
+  - Implement request coalescing
+  - Target: <12 second p95
+
+□ Feature Additions
+  - Add more AMP components
+  - Support more e-commerce platforms
+  - Add personalization features
+  - Implement A/B testing in emails
+  - Add analytics integration
+  - Build template gallery
+
+□ Scalability
+  - Optimize for higher throughput
+  - Implement horizontal scaling
+  - Add geographic distribution
+  - Optimize database sharding
+  - Implement queue-based processing
+  - Target: 500+ req/sec
+
+□ Monitoring and Analytics
+  - Build analytics dashboard
+  - Track conversion rates
+  - Measure cart abandonment
+  - Analyze user behavior
+  - Create business intelligence reports
+  - Optimize based on data
+
+
+=============================================================================
+SUCCESS METRICS & KPIs
+=============================================================================
+
+TECHNICAL METRICS
+-----------------
+□ System Performance
+  - API response time p95: <15 seconds (target), <30 seconds (acceptable)
+  - Success rate: >95%
+  - Uptime: 99.9%
+  - Error rate: <2%
+
+□ Quality Metrics
+  - Brand analyzer confidence: >70%
+  - Image enhancement success rate: >90%
+  - AMP validation pass rate: >98%
+  - Email client compatibility: 100% (with fallback)
+
+□ Cost Metrics
+  - Cost per generation: <$0.02
+  - Image processing: <$0.005 per image
+  - Agent processing: <$0.005 per generation
+  - Infrastructure: <$0.01 per generation
+
+□ Development Metrics
+  - Test coverage: >80%
+  - Code quality score: >85% (SonarQube)
+  - Security vulnerabilities: 0 critical, <5 medium
+  - Documentation coverage: 100% of public APIs
+
+BUSINESS METRICS
+----------------
+□ Adoption
+  - API calls per day
+  - Unique customers using feature
+  - Templates generated per month
+  - Customer retention rate
+
+□ User Satisfaction
+  - Net Promoter Score (NPS)
+  - Customer satisfaction (CSAT)
+  - Support ticket volume
+  - Feature adoption rate
+
+□ Revenue Impact
+  - Revenue from interactive templates
+  - Cost savings vs manual creation
+  - ROI calculation
+  - Customer lifetime value
+
+
+=============================================================================
+RISK MANAGEMENT
+=============================================================================
+
+HIGH PRIORITY RISKS
+-------------------
+□ Risk: External API dependencies failure
+  Mitigation:
+  - Implement fallback mechanisms
+  - Use multiple AI providers
+  - Cache aggressively
+  - Build retry logic with exponential backoff
+
+□ Risk: Cost overruns from AI services
+  Mitigation:
+  - Set strict cost budgets
+  - Implement cost alerts
+  - Cache AI responses
+  - Use cheaper models where appropriate
+  - Monitor cost per generation daily
+
+□ Risk: Agent decision quality issues
+  Mitigation:
+  - Extensive testing with diverse products
+  - Human review of agent decisions
+  - Continuous prompt optimization
+  - Fallback to template library
+  - Collect user feedback
+
+□ Risk: Performance issues under load
+  Mitigation:
+  - Load testing before launch
+  - Auto-scaling configuration
+  - Queue-based processing
+  - Circuit breakers for external services
+  - Performance monitoring and alerts
+
+□ Risk: E-commerce platform compatibility
+  Mitigation:
+  - Test with major platforms early
+  - Build robust fallback mechanism
+  - Partner with platform providers
+  - Maintain platform integration library
+  - Regular compatibility testing
+
+MEDIUM PRIORITY RISKS
+---------------------
+□ Risk: Email client AMP support changes
+  Mitigation:
+  - Monitor AMP specification updates
+  - Maintain fallback HTML version
+  - Test regularly across clients
+  - Keep AMP validator updated
+
+□ Risk: Scope creep and timeline delays
+  Mitigation:
+  - Strict phase boundaries
+  - MVP-first approach
+  - Regular progress reviews
+  - Backlog management
+  - Clear acceptance criteria
+
+
+=============================================================================
+RESOURCE REQUIREMENTS
+=============================================================================
+
+DEVELOPMENT TEAM
+----------------
+□ Backend Engineers: 2-3
+  - Primary systems development
+  - API implementation
+  - Service integration
+
+□ Frontend Engineer: 1
+  - Landing page development
+  - Email template optimization
+  - Responsive design
+
+□ DevOps Engineer: 1
+  - Infrastructure setup
+  - CI/CD pipeline
+  - Monitoring and alerting
+
+□ QA Engineer: 1
+  - Test strategy
+  - Automation
+  - Email client testing
+
+□ ML/AI Engineer: 1 (part-time)
+  - Agent system design
+  - Prompt engineering
+  - Quality optimization
+
+INFRASTRUCTURE COSTS (Estimated Monthly)
+----------------------------------------
+□ Development Environment
+  - Cloud infrastructure: $500
+  - Database: $200
+  - Redis: $100
+  - Testing services: $200
+  - Total: ~$1,000/month
+
+□ Production Environment
+  - Kubernetes cluster: $1,500
+  - Database (PostgreSQL): $500
+  - Redis cluster: $300
+  - CDN (CloudFront): $500
+  - Monitoring: $300
+  - Total: ~$3,100/month
+
+□ External Services
+  - OpenAI API: $1,000-2,000/month (estimated)
+  - Image AI services: $500-1,000/month
+  - Extract.pics API: $200/month
+  - Total: ~$1,700-3,200/month
+
+TOTAL ESTIMATED MONTHLY COST: $5,800-7,300
+
+At 10,000 generations/month = $0.58-0.73 per generation (infrastructure)
+Target AI cost: $0.02 per generation
+Total cost per generation: ~$0.60-0.75
+
+
+=============================================================================
+DECISION LOG
+=============================================================================
+
+KEY ARCHITECTURAL DECISIONS
+----------------------------
+□ Decision: Use agent-based system for template generation
+  Reasoning: Flexibility, scalability, maintainability
+  Alternatives: Rule-based, ML model, hybrid
+  Trade-offs: Complexity vs flexibility
+
+□ Decision: URL parameter approach for cart handoff
+  Reasoning: Universal compatibility, low cost, simple
+  Alternatives: API integration, browser automation
+  Trade-offs: Reliability vs integration depth
+
+□ Decision: LLM-powered agents vs rule-based
+  Reasoning: Better decision quality, adaptability
+  Alternatives: Pure rule-based, ML classifiers
+  Trade-offs: Cost and latency vs quality
+
+□ Decision: Separate landing page vs backend automation
+  Reasoning: Simplicity, cost, universality
+  Alternatives: Backend browser automation, API integrations
+  Trade-offs: Cart success rate vs implementation complexity
+
+□ Decision: Kubernetes deployment
+  Reasoning: Scalability, reliability, industry standard
+  Alternatives: Serverless, VMs, PaaS
+  Trade-offs: Complexity vs control
+
+□ Decision: PostgreSQL + Redis architecture
+  Reasoning: ACID compliance, caching performance
+  Alternatives: NoSQL, in-memory DB
+  Trade-offs: Consistency vs scalability
+
+
+=============================================================================
+NEXT STEPS
+=============================================================================
+
+TO BEGIN IMPLEMENTATION:
+------------------------
+1. Create feature branch: feature/interactive-shopping
+2. Set up project tracking board
+3. Begin Phase 0: Foundation & Assessment
+4. Schedule kickoff meeting with team
+5. Set up development environment
+6. Start codebase audit
+
+FIRST WEEK PRIORITIES:
+---------------------
+- Audit existing codebase (Day 1-2)
+- Set up development environment (Day 2-3)
+- Test external API integrations (Day 3-4)
+- Create detailed task breakdown (Day 4-5)
+- Begin database schema design (Day 5)
+
+QUESTIONS TO RESOLVE:
+--------------------
+1. Which image AI service to use? (Recraft, Stability AI, Replicate?)
+2. OpenAI vs Claude for agent LLM?
+3. Landing page hosting? (Vercel, Netlify, custom?)
+4. Analytics platform? (Mixpanel, Amplitude, custom?)
+5. Monitoring solution? (Datadog, New Relic, Prometheus?)
+6. Budget approval for external services?
+7. Team composition and availability?
+8. Launch timeline flexibility?
+
+
+=============================================================================
+CONCLUSION
+=============================================================================
+
+This implementation plan provides a structured approach to building the AMP
+Interactive Shopping Experience system over an 8-12 week timeline. The phased
+approach ensures incremental progress, manageable risk, and the ability to
+adjust based on learnings.
+
+Key success factors:
+- Strong foundation in Phase 1-2 (data and images)
+- Quality agent system in Phase 3-4
+- Robust cart handoff in Phase 5
+- Comprehensive testing in Phase 7
+- Careful production rollout in Phase 8
+
+Expected outcomes:
+- Automated interactive template generation
+- High-quality, brand-aware email experiences
+- Seamless cart handoff for major platforms
+- Cost-effective AI-powered system (<$0.02/generation)
+- Scalable architecture (500+ req/sec capable)
+
+Ready to begin? Start with Phase 0! 🚀
+
+=============================================================================

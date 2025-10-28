@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: amp-email-api-service
+  namespace: production
+  labels:
+    app: amp-email-api
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  selector:
+    app: amp-email-api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: production
+  labels:
+    app: postgres
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5432
+    targetPort: 5432
+    protocol: TCP
+    name: postgres
+  selector:
+    app: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: production
+  labels:
+    app: redis
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+    protocol: TCP
+    name: redis
+  selector:
+    app: redis

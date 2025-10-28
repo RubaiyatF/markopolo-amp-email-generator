@@ -1,0 +1,410 @@
+{
+  "info": {
+    "name": "AMP Email Generation API",
+    "description": "Complete API collection for AMP Email Generation Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{API_KEY}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "API_KEY",
+      "value": "amp_key_test123456789",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health Status",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Readiness Check",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ready",
+              "host": ["{{baseUrl}}"],
+              "path": ["ready"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Standard Endpoints",
+      "item": [
+        {
+          "name": "Generate Templates",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_urls\": [\"https://www.amazon.com/dp/B09KMRWYYJ\"],\n  \"campaign_context\": {\n    \"type\": \"promotional\",\n    \"goal\": \"conversion\"\n  },\n  \"user_context\": {\n    \"firstName\": \"John\",\n    \"email\": \"john@example.com\"\n  },\n  \"options\": {\n    \"variations\": 3,\n    \"preserve_merge_tags\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "generate"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Batch Campaign",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campaign_name\": \"Summer Sale 2024\",\n  \"product_urls\": [\n    \"https://amazon.com/product1\",\n    \"https://amazon.com/product2\"\n  ],\n  \"campaign_context\": {\n    \"type\": \"promotional\",\n    \"goal\": \"conversion\"\n  },\n  \"max_concurrent\": 10,\n  \"chunk_size\": 100,\n  \"webhook_url\": \"https://myapp.com/webhook/complete\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/batch/campaign",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "batch", "campaign"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Template",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/templates/:templateId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "templates", ":templateId"],
+              "variable": [
+                {
+                  "key": "templateId",
+                  "value": "template-uuid-here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Personalize Template",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"template_id\": \"template-uuid-here\",\n  \"recipient_data\": {\n    \"firstName\": \"Jane\",\n    \"email\": \"jane@example.com\",\n    \"lastPurchase\": \"2024-01-15\"\n  },\n  \"preview_mode\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/personalize",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "personalize"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Preview Template",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/preview/:templateId?format=amp",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "preview", ":templateId"],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "amp"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "templateId",
+                  "value": "template-uuid-here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Third-Party Compatible",
+      "item": [
+        {
+          "name": "ML-Compatible Generate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyId\": \"company-123\",\n  \"userId\": \"user-456\",\n  \"channel\": \"email\",\n  \"campaignContext\": {\n    \"type\": \"promotional\",\n    \"goal\": \"conversion\"\n  },\n  \"productContext\": [\n    {\n      \"name\": \"Product Name\",\n      \"price\": 99.99,\n      \"url\": \"https://example.com/product\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ml-compatible/generate-amp-content",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "ml-compatible", "generate-amp-content"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Action Tree Generate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyId\": \"company-123\",\n  \"userId\": \"user-456\",\n  \"channel\": \"email\",\n  \"campaignContext\": {\n    \"type\": \"promotional\",\n    \"goal\": \"conversion\"\n  },\n  \"actionTreeNodes\": [\n    {\n      \"id\": \"node-1\",\n      \"description\": \"Welcome email\",\n      \"nodeType\": \"action\",\n      \"indication\": \"email\",\n      \"target\": [\"new_users\"],\n      \"nodeContext\": {\n        \"purpose\": \"Welcome new subscriber\",\n        \"sequence\": 1\n      }\n    }\n  ],\n  \"productContext\": [\n    {\n      \"name\": \"Product\",\n      \"price\": 99.99\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/action-tree/generate-content",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "action-tree", "generate-content"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Regenerate Content",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"feedback\": \"Make the subject line more engaging\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/regenerate/:contentId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "regenerate", ":contentId"],
+              "variable": [
+                {
+                  "key": "contentId",
+                  "value": "content-uuid-here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Use Cases",
+      "item": [
+        {
+          "name": "Abandoned Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cart_id\": \"cart_123\",\n  \"user_email\": \"customer@example.com\",\n  \"product_urls\": [\n    \"https://amazon.com/product1\"\n  ],\n  \"abandoned_at\": \"2024-01-01T10:00:00Z\",\n  \"cart_value\": 149.99,\n  \"currency\": \"USD\",\n  \"trigger_after_hours\": 2,\n  \"discount_strategy\": \"auto\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/use-cases/abandoned-cart/campaign",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "use-cases", "abandoned-cart", "campaign"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Product Launch",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_urls\": [\"https://example.com/new-product\"],\n  \"launch_date\": \"2024-06-01T00:00:00Z\",\n  \"early_access\": true,\n  \"highlight_features\": [\"Feature 1\", \"Feature 2\"],\n  \"pre_order_enabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/use-cases/product-launch/campaign",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "use-cases", "product-launch", "campaign"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Price Drop Alert",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_url\": \"https://amazon.com/product\",\n  \"original_price\": 99.99,\n  \"new_price\": 79.99,\n  \"limited_time\": true,\n  \"stock_level\": \"low\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/use-cases/price-drop/alert",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "use-cases", "price-drop", "alert"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Back in Stock",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_url\": \"https://example.com/product\",\n  \"waitlist_id\": \"waitlist_123\",\n  \"stock_quantity\": 50,\n  \"notify_urgency\": true,\n  \"related_products\": [\"https://example.com/alternative\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/use-cases/back-in-stock/notify",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "use-cases", "back-in-stock", "notify"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Campaign Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/analytics/campaign/:campaignId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "analytics", "campaign", ":campaignId"],
+              "variable": [
+                {
+                  "key": "campaignId",
+                  "value": "campaign-uuid-here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Company Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/analytics/company/:companyId?start_date=2024-01-01&end_date=2024-12-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "analytics", "company", ":companyId"],
+              "query": [
+                {
+                  "key": "start_date",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-31"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "company-123"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

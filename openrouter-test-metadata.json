@@ -1,0 +1,21 @@
+{
+  "sourceImage": "004_ecommerce.png",
+  "model": "google/gemini-2.5-flash",
+  "imagePlaceholders": [
+    "image_placeholder_1",
+    "image_placeholder_2",
+    "image_placeholder_3",
+    "image_placeholder_4",
+    "image_placeholder_5",
+    "image_placeholder_6",
+    "image_placeholder_7",
+    "image_placeholder_8",
+    "image_placeholder_9",
+    "image_placeholder_10",
+    "image_placeholder_11",
+    "image_placeholder_12"
+  ],
+  "processingTime": 18183,
+  "htmlLength": 15236,
+  "generatedAt": "2025-10-21T17:58:07.009Z"
+}

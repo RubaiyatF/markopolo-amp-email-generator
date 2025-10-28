@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completing Your Purchase...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 48px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            max-width: 150px;
+            max-height: 60px;
+            margin-bottom: 24px;
+        }
+
+        .spinner {
+            width: 64px;
+            height: 64px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #1f2937;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .status {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .progress {
+            font-size: 14px;
+            color: #9ca3af;
+            font-style: italic;
+        }
+
+        .error-container {
+            display: none;
+        }
+
+        .error-container.show {
+            display: block;
+        }
+
+        .error-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .error-title {
+            font-size: 20px;
+            color: #dc2626;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .error-message {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .platform-badge {
+            display: inline-block;
+            background: #f3f4f6;
+            color: #4b5563;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Loading State -->
+        <div id="loadingState">
+            <img id="brandLogo" class="logo" style="display:none;" alt="Brand Logo">
+            <div class="spinner"></div>
+            <h1>Preparing Your Cart</h1>
+            <p class="status" id="statusText">Connecting to store...</p>
+            <p class="progress" id="progressText">This will only take a moment</p>
+            <div class="platform-badge" id="platformBadge" style="display:none;"></div>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="error-container">
+            <div class="error-icon">⚠️</div>
+            <h2 class="error-title">Unable to Add to Cart</h2>
+            <p class="error-message" id="errorMessage">We encountered an issue processing your selection.</p>
+            <a href="#" id="fallbackLink" class="btn">View Product</a>
+            <br><br>
+            <a href="#" id="retryLink" class="btn btn-secondary" style="display:none;">Try Again</a>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = 'https://amp-platform-api.com/api/v1'; // Replace with your API base URL
+        const TIMEOUT_MS = 10000;
+        
+        // State
+        let timeoutId;
+        let cartData;
+        let platform;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Set timeout
+                timeoutId = setTimeout(() => {
+                    showError('Request timed out. Please try again.', true);
+                }, TIMEOUT_MS);
+
+                // Parse URL parameters
+                const params = new URLSearchParams(window.location.search);
+                
+                if (params.has('data')) {
+                    // Inline encoded data
+                    cartData = decodeCartData(params.get('data'));
+                } else if (params.has('s')) {
+                    // Short code
+                    const shortCode = params.get('s');
+                    updateStatus('Retrieving your selections...');
+                    cartData = await fetchFromShortCode(shortCode);
+                } else if (params.has('sid')) {
+                    // Session ID
+                    const sessionId = params.get('sid');
+                    updateStatus('Retrieving your selections...');
+                    cartData = await fetchFromSession(sessionId);
+                } else {
+                    throw new Error('No cart data provided');
+                }
+
+                if (!cartData) {
+                    throw new Error('Cart data not found or expired');
+                }
+
+                // Detect platform
+                platform = detectPlatform(cartData.sd);
+                showPlatformBadge(platform);
+
+                // Execute cart addition
+                await addToCart(cartData, platform);
+
+            } catch (error) {
+                console.error('Cart handoff error:', error);
+                showError(error.message || 'An unexpected error occurred', true);
+            }
+        });
+
+        // Decode Base64 cart data
+        function decodeCartData(encoded) {
+            try {
+                // Restore Base64 from URL-safe encoding
+                const base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+                const paddingLength = (4 - (base64.length % 4)) % 4;
+                const paddedBase64 = base64 + '='.repeat(paddingLength);
+                
+                const jsonString = atob(paddedBase64);
+                const data = JSON.parse(jsonString);
+                
+                // Convert from compact format
+                return {
+                    productId: data.p,
+                    variantId: data.v,
+                    color: data.c,
+                    size: data.s,
+                    quantity: data.q,
+                    customizations: data.cu,
+                    productUrl: data.u,
+                    storeDomain: data.sd
+                };
+            } catch (error) {
+                throw new Error('Invalid cart data format');
+            }
+        }
+
+        // Fetch from short code
+        async function fetchFromShortCode(shortCode) {
+            const response = await fetch(`${API_BASE_URL}/cart/shortcode/${shortCode}`);
+            if (!response.ok) {
+                throw new Error('Short code not found or expired');
+            }
+            return await response.json();
+        }
+
+        // Fetch from session
+        async function fetchFromSession(sessionId) {
+            const response = await fetch(`${API_BASE_URL}/cart/session/${sessionId}`);
+            if (!response.ok) {
+                throw new Error('Session not found or expired');
+            }
+            return await response.json();
+        }
+
+        // Detect e-commerce platform
+        function detectPlatform(domain) {
+            const domainLower = domain.toLowerCase();
+            
+            if (domainLower.includes('myshopify.com')) return 'shopify';
+            if (domainLower.includes('mybigcommerce.com')) return 'bigcommerce';
+            
+            // Check for common CMS patterns (would need additional detection in production)
+            return 'custom';
+        }
+
+        // Show platform badge
+        function showPlatformBadge(platform) {
+            const badge = document.getElementById('platformBadge');
+            const platformNames = {
+                'shopify': 'Shopify Store',
+                'woocommerce': 'WooCommerce',
+                'magento': 'Magento',
+                'bigcommerce': 'BigCommerce',
+                'custom': 'Online Store'
+            };
+            badge.textContent = platformNames[platform] || 'Online Store';
+            badge.style.display = 'inline-block';
+        }
+
+        // Update status text
+        function updateStatus(text) {
+            document.getElementById('statusText').textContent = text;
+        }
+
+        // Add to cart based on platform
+        async function addToCart(data, platform) {
+            updateStatus('Adding to cart...');
+            
+            try {
+                switch (platform) {
+                    case 'shopify':
+                        await addToCartShopify(data);
+                        break;
+                    case 'woocommerce':
+                        await addToCartWooCommerce(data);
+                        break;
+                    case 'magento':
+                        await addToCartMagento(data);
+                        break;
+                    default:
+                        // Fallback to product page
+                        redirectToProduct(data);
+                }
+            } catch (error) {
+                console.error('Add to cart failed:', error);
+                showError('Failed to add to cart. Redirecting to product page...', false);
+                setTimeout(() => redirectToProduct(data), 2000);
+            }
+        }
+
+        // Shopify cart addition
+        async function addToCartShopify(data) {
+            const cartUrl = `https://${data.storeDomain}/cart/add.js`;
+            
+            const payload = {
+                id: data.variantId || data.productId,
+                quantity: data.quantity
+            };
+
+            if (data.customizations) {
+                payload.properties = data.customizations;
+            }
+
+            const response = await fetch(cartUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add to Shopify cart');
+            }
+
+            clearTimeout(timeoutId);
+            updateStatus('Success! Redirecting to cart...');
+            
+            setTimeout(() => {
+                window.location.href = `https://${data.storeDomain}/cart`;
+            }, 1000);
+        }
+
+        // WooCommerce cart addition
+        async function addToCartWooCommerce(data) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `https://${data.storeDomain}/?add-to-cart=${data.productId}`;
+
+            const quantityInput = document.createElement('input');
+            quantityInput.type = 'hidden';
+            quantityInput.name = 'quantity';
+            quantityInput.value = data.quantity;
+            form.appendChild(quantityInput);
+
+            if (data.variantId) {
+                const variantInput = document.createElement('input');
+                variantInput.type = 'hidden';
+                variantInput.name = 'variation_id';
+                variantInput.value = data.variantId;
+                form.appendChild(variantInput);
+            }
+
+            if (data.customizations) {
+                for (const [key, value] of Object.entries(data.customizations)) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = value;
+                    form.appendChild(input);
+                }
+            }
+
+            document.body.appendChild(form);
+            clearTimeout(timeoutId);
+            updateStatus('Success! Redirecting to cart...');
+            form.submit();
+        }
+
+        // Magento cart addition
+        async function addToCartMagento(data) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `https://${data.storeDomain}/checkout/cart/add`;
+
+            const productInput = document.createElement('input');
+            productInput.type = 'hidden';
+            productInput.name = 'product';
+            productInput.value = data.productId;
+            form.appendChild(productInput);
+
+            const quantityInput = document.createElement('input');
+            quantityInput.type = 'hidden';
+            quantityInput.name = 'qty';
+            quantityInput.value = data.quantity;
+            form.appendChild(quantityInput);
+
+            if (data.customizations) {
+                const superAttributeInput = document.createElement('input');
+                superAttributeInput.type = 'hidden';
+                superAttributeInput.name = 'super_attribute';
+                superAttributeInput.value = JSON.stringify(data.customizations);
+                form.appendChild(superAttributeInput);
+            }
+
+            document.body.appendChild(form);
+            clearTimeout(timeoutId);
+            updateStatus('Success! Redirecting to cart...');
+            form.submit();
+        }
+
+        // Redirect to product page (fallback)
+        function redirectToProduct(data) {
+            clearTimeout(timeoutId);
+            window.location.href = data.productUrl;
+        }
+
+        // Show error state
+        function showError(message, showFallback) {
+            clearTimeout(timeoutId);
+            
+            document.getElementById('loadingState').style.display = 'none';
+            const errorState = document.getElementById('errorState');
+            errorState.classList.add('show');
+            
+            document.getElementById('errorMessage').textContent = message;
+            
+            if (showFallback && cartData) {
+                const fallbackLink = document.getElementById('fallbackLink');
+                fallbackLink.href = cartData.productUrl;
+                fallbackLink.style.display = 'inline-block';
+                
+                const retryLink = document.getElementById('retryLink');
+                retryLink.onclick = (e) => {
+                    e.preventDefault();
+                    window.location.reload();
+                };
+                retryLink.style.display = 'inline-block';
+            }
+        }
+    </script>
+</body>
+</html>

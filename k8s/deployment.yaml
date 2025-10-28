@@ -1,0 +1,156 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: amp-email-api
+  namespace: production
+  labels:
+    app: amp-email-api
+    tier: backend
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: amp-email-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: amp-email-api
+        tier: backend
+        version: v1
+    spec:
+      containers:
+      - name: api
+        image: amp-platform/api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "3000"
+        - name: API_VERSION
+          value: "v1"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: amp-email-secrets
+              key: database-url
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: amp-email-config
+              key: redis-host
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: amp-email-config
+              key: redis-port
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: amp-email-secrets
+              key: redis-password
+        - name: SCRAPER_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: amp-email-config
+              key: scraper-base-url
+        - name: REPLICATE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: amp-email-secrets
+              key: replicate-api-key
+              optional: true
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: amp-email-secrets
+              key: aws-access-key-id
+              optional: true
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: amp-email-secrets
+              key: aws-secret-access-key
+              optional: true
+        - name: AWS_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: amp-email-config
+              key: aws-region
+              optional: true
+        - name: S3_BUCKET_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: amp-email-config
+              key: s3-bucket-name
+              optional: true
+        - name: CDN_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: amp-email-config
+              key: cdn-base-url
+              optional: true
+        resources:
+          requests:
+            cpu: 500m
+            memory: 512Mi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 15"]
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: amp-email-config
+  namespace: production
+data:
+  redis-host: "redis-service"
+  redis-port: "6379"
+  scraper-base-url: "https://product-scraper-217130114839.us-east1.run.app"
+  aws-region: "us-east-1"
+  s3-bucket-name: "amp-email-templates"
+  cdn-base-url: "https://cdn.amp-platform.com"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: amp-email-secrets
+  namespace: production
+type: Opaque
+stringData:
+  database-url: "postgresql://user:password@postgres-service:5432/amp_email_db"
+  redis-password: "CHANGE_ME_REDIS_PASSWORD"
+  replicate-api-key: "CHANGE_ME_REPLICATE_API_KEY"
+  aws-access-key-id: "CHANGE_ME_AWS_ACCESS_KEY"
+  aws-secret-access-key: "CHANGE_ME_AWS_SECRET_KEY"

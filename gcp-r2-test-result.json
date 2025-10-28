@@ -1,0 +1,1 @@
+{"error":"\nInvalid `prisma.company.findFirst()` invocation:\n\n\nAuthentication failed against database server, the provided database credentials for `postgres.oeztikupnlchucnhhhnf` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at the configured address.","statusCode":500}
