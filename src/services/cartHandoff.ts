@@ -178,7 +178,7 @@ export class CartHandoffService {
       return null;
     }
 
-    return entry.selections as CartSelections;
+    return entry.selections as unknown as CartSelections;
   }
 
   /**

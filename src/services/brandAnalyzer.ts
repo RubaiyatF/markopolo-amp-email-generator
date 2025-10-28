@@ -153,7 +153,7 @@ export class BrandAnalyzerService {
         const html = response.data;
         const $ = cheerio.load(html);
 
-        results.push({ url, html, $ });
+        results.push({ url, html, $: $ as cheerio.CheerioAPI });
       } catch (error) {
         // Page not found or error - continue with available pages
         console.warn(`Failed to fetch ${url}:`, error);
@@ -280,7 +280,7 @@ export class BrandAnalyzerService {
   /**
    * Determine color context from element
    */
-  private determineColorContext($el: cheerio.Cheerio<any>): ColorFrequency['context'] {
+  private determineColorContext($el: any): ColorFrequency['context'] {
     const tagName = $el.prop('tagName')?.toLowerCase();
     const classes = $el.attr('class') || '';
     const id = $el.attr('id') || '';
@@ -392,7 +392,7 @@ export class BrandAnalyzerService {
   /**
    * Extract font-family from element
    */
-  private extractFontFamily($el: cheerio.Cheerio<any>): string | null {
+  private extractFontFamily($el: any): string | null {
     const style = $el.attr('style') || '';
     const match = style.match(/font-family:\s*([^;]+)/i);
     return match ? match[1].trim() : null;

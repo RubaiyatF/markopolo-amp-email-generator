@@ -212,7 +212,7 @@ export class TemplateGenerationService {
       // Create discount badge if applicable
       if (campaignContext.discount && campaignContext.discount > 0) {
         const discountBadge = await mediaGenerationService.createDiscountBadge(
-          products[0].image || '',
+          products[0].images?.[0] || '',
           campaignContext.discount,
           productId
         );
