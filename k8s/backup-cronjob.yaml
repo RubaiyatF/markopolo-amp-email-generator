@@ -1,0 +1,165 @@
+# Database Backup CronJob
+# Runs daily at 2 AM UTC, backs up to S3
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: production
+spec:
+  schedule: "0 2 * * *"  # Daily at 2 AM UTC
+  successfulJobsHistoryLimit: 7
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: postgres-backup
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: backup
+            image: postgres:14-alpine
+            env:
+            - name: PGHOST
+              value: postgres-service
+            - name: PGPORT
+              value: "5432"
+            - name: PGDATABASE
+              value: amp_email_db
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: password
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: amp-email-secrets
+                  key: aws-access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: amp-email-secrets
+                  key: aws-secret-access-key
+            - name: S3_BUCKET
+              value: "amp-email-backups"
+            - name: BACKUP_RETENTION_DAYS
+              value: "30"
+            command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              
+              # Install AWS CLI
+              apk add --no-cache aws-cli
+              
+              # Create backup filename with timestamp
+              BACKUP_FILE="backup-$(date +%Y%m%d-%H%M%S).sql.gz"
+              
+              echo "Starting database backup: $BACKUP_FILE"
+              
+              # Create compressed backup
+              pg_dump --verbose --clean --if-exists | gzip > /tmp/$BACKUP_FILE
+              
+              # Upload to S3
+              aws s3 cp /tmp/$BACKUP_FILE s3://${S3_BUCKET}/postgres/$BACKUP_FILE
+              
+              # Verify upload
+              if aws s3 ls s3://${S3_BUCKET}/postgres/$BACKUP_FILE; then
+                echo "Backup uploaded successfully"
+              else
+                echo "Backup upload failed"
+                exit 1
+              fi
+              
+              # Clean up local file
+              rm /tmp/$BACKUP_FILE
+              
+              # Delete old backups (older than retention days)
+              echo "Cleaning up old backups..."
+              CUTOFF_DATE=$(date -d "${BACKUP_RETENTION_DAYS} days ago" +%Y%m%d)
+              
+              aws s3 ls s3://${S3_BUCKET}/postgres/ | while read -r line; do
+                FILE_DATE=$(echo $line | awk '{print $4}' | grep -oP '\d{8}' | head -1)
+                FILE_NAME=$(echo $line | awk '{print $4}')
+                
+                if [ "$FILE_DATE" -lt "$CUTOFF_DATE" ]; then
+                  echo "Deleting old backup: $FILE_NAME"
+                  aws s3 rm s3://${S3_BUCKET}/postgres/$FILE_NAME
+                fi
+              done
+              
+              echo "Backup completed successfully"
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: 500m
+                memory: 1Gi
+
+---
+# Redis Backup CronJob
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: redis-backup
+  namespace: production
+spec:
+  schedule: "0 3 * * *"  # Daily at 3 AM UTC
+  successfulJobsHistoryLimit: 7
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: backup
+            image: redis:7-alpine
+            env:
+            - name: REDIS_HOST
+              value: redis-service
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: amp-email-secrets
+                  key: redis-password
+            - name: S3_BUCKET
+              value: "amp-email-backups"
+            command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              
+              # Install AWS CLI
+              apk add --no-cache aws-cli
+              
+              BACKUP_FILE="redis-backup-$(date +%Y%m%d-%H%M%S).rdb"
+              
+              echo "Starting Redis backup"
+              
+              # Trigger BGSAVE
+              redis-cli -h $REDIS_HOST -p $REDIS_PORT -a $REDIS_PASSWORD BGSAVE
+              
+              # Wait for save to complete
+              while [ $(redis-cli -h $REDIS_HOST -p $REDIS_PORT -a $REDIS_PASSWORD LASTSAVE) -eq $(redis-cli -h $REDIS_HOST -p $REDIS_PORT -a $REDIS_PASSWORD LASTSAVE) ]; do
+                sleep 1
+              done
+              
+              # Copy dump file (this would need volume mounting in real scenario)
+              echo "Redis backup initiated successfully"
+              
+              # In production, mount Redis data volume and copy dump.rdb to S3

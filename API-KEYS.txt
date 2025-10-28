@@ -1,0 +1,51 @@
+# AMP Email Platform - API Keys
+
+## Production Account
+API Key: amp_69f3bc87252f7abfd2901b79ec1905303027d87a1f77c4a3a333d6f602d724ef
+Plan: professional
+Credits: 10,000
+Rate Limit: professional
+
+## Test Account
+API Key: amp_aab77c1ab27ec732f997e7e55260a3d1788540ee9d7d62114ce67a43c76a1a83
+Plan: free
+Credits: 1,000
+Rate Limit: free
+
+## Development Account
+API Key: amp_8998d35158aaaf2eef922be1cedcf35c045107bd461b9e5dfbde3b3594fda53b
+Plan: free
+Credits: 500
+Rate Limit: free
+
+---
+
+## Usage Example
+
+curl -X POST https://api.magpie.to/api/v1/generate \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer amp_69f3bc87252f7abfd2901b79ec1905303027d87a1f77c4a3a333d6f602d724ef" \
+  -d '{
+    "product_urls": ["https://amazon.com/dp/B09KMRWYYJ"],
+    "campaign_context": {
+      "type": "promotional",
+      "goal": "acquisition"
+    }
+  }'
+
+---
+
+## Endpoints
+
+- Health: GET /health
+- API Info: GET /api
+- Generate: POST /api/v1/generate
+- Batch: POST /api/v1/batch/campaign
+- Templates: GET /api/v1/templates/:id
+- Personalize: POST /api/v1/personalize
+- Preview: GET /api/v1/preview/:id
+- Documentation: GET /api/docs
+
+---
+
+Created: 2025-10-20

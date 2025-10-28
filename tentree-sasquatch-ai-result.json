@@ -1,0 +1,126 @@
+[
+  {
+    "id": "tmpl_1761039138163_0",
+    "variation_name": "A",
+    "content": {
+      "subject": "{{firstName}}, introducing Sasquatch Sends It T-Shirt",
+      "body": "<!doctype html>\n<html ⚡4email>\n<head>\n    <meta charset=\"utf-8\">\n    <script async src=\"https://cdn.ampproject.org/v0.js\"></script>\n    <style amp4email-boilerplate>body{visibility:hidden}</style>\n    <style amp-custom>\n        body {\n            margin: 0;\n            font-family: 'Arial', sans-serif;\n            background: #FFFFFF;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background: #FFFFFF;\n        }\n        .header {\n            background: linear-gradient(135deg, #1E3A8A 0%, #F97316 100%);\n            padding: 20px;\n            text-align: center;\n        }\n        .brand {\n            font-size: 24px;\n            color: #FFFF00;\n            font-weight: 700;\n            text-transform: uppercase;\n        }\n        .hero-img {\n            width: 100%;\n            height: auto;\n        }\n        .content {\n            padding: 25px;\n        }\n        h1 {\n            color: #1E3A8A;\n            font-size: 32px;\n            margin: 0 0 15px;\n            text-align: center;\n        }\n        .mission-text {\n            background: linear-gradient(90deg, #F97316 0%, #FFFF00 100%);\n            -webkit-background-clip: text;\n            -webkit-text-fill-color: transparent;\n            font-weight: 700;\n            font-size: 24px;\n            text-align: center;\n            margin: 20px 0;\n        }\n        .features {\n            display: grid;\n            grid-gap: 15px;\n            margin: 25px 0;\n        }\n        .feature-item {\n            background: #F5F5F5;\n            padding: 15px;\n            border-radius: 8px;\n            text-align: center;\n        }\n        .cta-button {\n            display: block;\n            width: 80%;\n            margin: 25px auto;\n            padding: 18px;\n            text-align: center;\n            background: linear-gradient(45deg, #F97316 0%, #FFFF00 100%);\n            color: #1E3A8A !important;\n            font-weight: 700;\n            text-decoration: none;\n            border-radius: 50px;\n            font-size: 20px;\n            text-transform: uppercase;\n        }\n        .trust-badges {\n            display: flex;\n            justify-content: space-around;\n            padding: 20px;\n            background: #F5F5F5;\n            margin-top: 25px;\n        }\n        .trust-item {\n            text-align: center;\n            font-size: 14px;\n        }\n        @media (max-width: 600px) {\n            .container {\n                width: 100%;\n            }\n            h1 {\n                font-size: 28px;\n            }\n            .cta-button {\n                width: 90%;\n                padding: 15px;\n            }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"header\">\n            <div class=\"brand\">TENTREE</div>\n        </div>\n        \n        <amp-img src=\"https://storage.googleapis.com/markopolo-product-images/products/ZBHDGSiRxDDq/screenshot_0.jpg\" width=\"600\" height=\"600\" layout=\"responsive\" alt=\"Sasquatch Sends It T-Shirt\" class=\"hero-img\"></amp-img>\n\n        <div class=\"content\">\n            <h1>Hey {{firstName}}, Meet Your New Favorite Tee!</h1>\n            \n            <div class=\"mission-text\">10 Trees Planted With Every Purchase</div>\n\n            <div class=\"features\">\n                <div class=\"feature-item\">\n                    🌍 Earth-First Materials<br>\n                    Sustainable & Durable\n                </div>\n                <div class=\"feature-item\">\n                    🌱 100% Carbon Capture<br>\n                    Restoring Ecosystems Worldwide\n                </div>\n                <div class=\"feature-item\">\n                    💪 1 Billion Tree Mission<br>\n                    Join Our 2030 Goal\n                </div>\n            </div>\n\n            <a href=\"https://www.tentree.com/products/sasquatch-sends-it-t-shirt-crimson-meteorite-black\" class=\"cta-button\">BE THE FIRST TO OWN IT</a>\n        </div>\n\n        <div class=\"trust-badges\">\n            <div class=\"trust-item\">🚚 Free Shipping<br>Worldwide</div>\n            <div class=\"trust-item\">♻️ 30-Day Returns<br>No Questions Asked</div>\n            <div class=\"trust-item\">🌳 Verified Tree Planting</div>\n        </div>\n    </div>\n</body>\n</html>",
+      "preheader": "Sasquatch Sends It T-Shirt is waiting for you - Shop now and enjoy!"
+    },
+    "amp_features": [
+      "amp4email",
+      "amp-img",
+      "responsive-layout",
+      "hero-image",
+      "rag-inspired"
+    ],
+    "merge_tags": [
+      "firstName"
+    ],
+    "processed_images": [
+      {
+        "original_url": "https://storage.googleapis.com/markopolo-product-images/products/ZBHDGSiRxDDq/screenshot_0.jpg",
+        "optimized_url": "https://cdn.magpie.to/images/ZBHDGSiRxDDq/optimized-1761039119249.jpg",
+        "webp_url": "https://cdn.magpie.to/images/ZBHDGSiRxDDq/webp-1761039119249.webp",
+        "thumbnail_url": "https://cdn.magpie.to/images/ZBHDGSiRxDDq/thumb-1761039119249.webp",
+        "width": 436,
+        "height": 1200,
+        "format": "jpeg",
+        "size_bytes": 50431
+      }
+    ],
+    "media_assets": [
+      {
+        "type": "badge",
+        "url": "https://cdn.magpie.to/media/ZBHDGSiRxDDq/social-proof-1761039119751.png",
+        "width": 200,
+        "height": 60,
+        "format": "png"
+      }
+    ],
+    "enhanced_media": []
+  },
+  {
+    "id": "tmpl_1761039159483_1",
+    "variation_name": "B",
+    "content": {
+      "subject": "🆕 Just launched: Sasquatch Sends It T-Shirt is here!",
+      "body": "<!doctype html>\n<html ⚡4email>\n<head>\n    <meta charset=\"utf-8\">\n    <script async src=\"https://cdn.ampproject.org/v0.js\"></script>\n    <style amp4email-boilerplate>body{visibility:hidden}</style>\n    <style amp-custom>\n        body {\n            margin: 0;\n            padding: 20px;\n            font-family: 'Helvetica Neue', Arial, sans-serif;\n            background-color: #F5F5F5;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background: #FFFFFF;\n            border-radius: 8px;\n        }\n        .header {\n            padding: 20px;\n            text-align: center;\n            border-bottom: 1px solid #F3EAD8;\n        }\n        .brand {\n            font-size: 24px;\n            color: #1E3A8A;\n            font-weight: bold;\n            margin-bottom: 10px;\n        }\n        .hero-image {\n            width: 100%;\n            height: auto;\n            border-radius: 8px 8px 0 0;\n        }\n        .content {\n            padding: 25px;\n            color: #333333;\n        }\n        h1 {\n            font-size: 26px;\n            margin: 0 0 15px 0;\n            color: #1E3A8A;\n        }\n        .mission-text {\n            font-size: 16px;\n            line-height: 1.5;\n            margin-bottom: 20px;\n            color: #666666;\n        }\n        .cta-button {\n            display: block;\n            width: 75%;\n            margin: 0 auto 25px;\n            padding: 15px 30px;\n            background-color: #1E3A8A;\n            color: white;\n            text-align: center;\n            text-decoration: none;\n            border-radius: 30px;\n            font-weight: bold;\n            font-size: 18px;\n        }\n        .features {\n            margin: 20px 0;\n            padding: 15px;\n            background: #F3EAD8;\n            border-radius: 8px;\n        }\n        .trust-badges {\n            text-align: center;\n            padding: 15px 0;\n            font-size: 14px;\n            color: #666666;\n        }\n        .footer {\n            padding: 20px;\n            text-align: center;\n            font-size: 12px;\n            color: #999999;\n            background: #F5F5F5;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"header\">\n            <div class=\"brand\">tentree</div>\n        </div>\n        \n        <amp-img src=\"https://storage.googleapis.com/markopolo-product-images/products/ZBHDGSiRxDDq/screenshot_0.jpg\"\n            width=\"600\"\n            height=\"400\"\n            layout=\"responsive\"\n            alt=\"Sasquatch Sends It T-Shirt\"\n            class=\"hero-image\">\n        </amp-img>\n\n        <div class=\"content\">\n            <h1>Hello {{firstName}}, Meet Your New Favorite Tee</h1>\n            \n            <p class=\"mission-text\">Every Sasquatch Sends It T-Shirt plants 10 trees. Join our mission to plant 1 billion trees by 2030 with Earth-First apparel that protects wildlife habitats and creates jobs worldwide.</p>\n\n            <a href=\"https://www.tentree.com/products/sasquatch-sends-it-t-shirt-crimson-meteorite-black\" class=\"cta-button\">Be the First to Own It</a>\n\n            <div class=\"features\">\n                <p>✓ Sustainably made materials<br>\n                ✓ 10 trees planted with each purchase<br>\n                ✓ Carbon capture ecosystem support</p>\n            </div>\n\n            <div class=\"trust-badges\">\n                ★★★★★<br>\n                Free Shipping & Returns ∙ Ethically Produced ∙ Climate Neutral Certified\n            </div>\n        </div>\n\n        <div class=\"footer\">\n            <p>Sent to {{email}}<br>\n            © 2023 tentree ∙ 123 Sustainability Lane, Earth<br>\n            <a href=\"#\">Unsubscribe</a> | <a href=\"#\">View Privacy Policy</a></p>\n        </div>\n    </div>\n</body>\n</html>",
+      "preheader": "Sasquatch Sends It T-Shirt is waiting for you - Shop now and enjoy!"
+    },
+    "amp_features": [
+      "amp4email",
+      "amp-img",
+      "responsive-layout",
+      "minimal-clean",
+      "rag-inspired"
+    ],
+    "merge_tags": [
+      "firstName",
+      "email"
+    ],
+    "processed_images": [
+      {
+        "original_url": "https://storage.googleapis.com/markopolo-product-images/products/ZBHDGSiRxDDq/screenshot_0.jpg",
+        "optimized_url": "https://cdn.magpie.to/images/ZBHDGSiRxDDq/optimized-1761039119249.jpg",
+        "webp_url": "https://cdn.magpie.to/images/ZBHDGSiRxDDq/webp-1761039119249.webp",
+        "thumbnail_url": "https://cdn.magpie.to/images/ZBHDGSiRxDDq/thumb-1761039119249.webp",
+        "width": 436,
+        "height": 1200,
+        "format": "jpeg",
+        "size_bytes": 50431
+      }
+    ],
+    "media_assets": [
+      {
+        "type": "badge",
+        "url": "https://cdn.magpie.to/media/ZBHDGSiRxDDq/social-proof-1761039119751.png",
+        "width": 200,
+        "height": 60,
+        "format": "png"
+      }
+    ],
+    "enhanced_media": []
+  },
+  {
+    "id": "tmpl_1761039207117_2",
+    "variation_name": "C",
+    "content": {
+      "subject": "✨ Be the first to own Sasquatch Sends It T-Shirt",
+      "body": "<!doctype html>\n<html ⚡4email>\n<head>\n<meta charset=\"utf-8\">\n<script async src=\"https://cdn.ampproject.org/v0.js\"></script>\n<style amp4email-boilerplate>body{visibility:hidden}</style>\n<style amp-custom>\n    body {margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif;}\n    .container {max-width: 600px; margin: 0 auto; background: #FFFFFF;}\n    .header {background: #1E3A8A; padding: 20px; text-align: center;}\n    .brand {color: #FFFFFF; font-size: 24px; font-weight: 700;}\n    .content {padding: 30px 25px; color: #000000;}\n    .product-image {width: 100%; height: auto;}\n    .title {color: #1E3A8A; font-size: 28px; margin: 20px 0; font-weight: bold;}\n    .cta-button {display: block; background: #F97316; color: #FFFFFF; text-decoration: none; padding: 15px 30px; \n                border-radius: 5px; font-weight: bold; margin: 25px auto; text-align: center; width: 70%;}\n    .benefit-section {background: #F5F5F5; padding: 25px; margin: 25px 0; border-radius: 5px;}\n    .benefit-title {color: #1E3A8A; font-size: 20px; margin-bottom: 15px;}\n    .trust-badges {text-align: center; padding: 20px; border-top: 2px solid #D8C4A0;}\n    .footer {background: #1E3A8A; color: #FFFFFF; padding: 20px; text-align: center; font-size: 12px;}\n    @media (max-width: 600px) {\n        .cta-button {width: 90%;}\n        .content {padding: 20px 15px;}\n    }\n</style>\n</head>\n<body>\n<div class=\"container\">\n    <div class=\"header\">\n        <div class=\"brand\">TENTREE</div>\n    </div>\n    \n    <div class=\"content\">\n        <h1 class=\"title\">Hi {{firstName}}, Meet Our New Earth Hero</h1>\n        \n        <amp-img class=\"product-image\" src=\"https://storage.googleapis.com/markopolo-product-images/products/ZBHDGSiRxDDq/screenshot_0.jpg\" \n                width=\"600\" height=\"600\" layout=\"responsive\" alt=\"Sasquatch Sends It T-Shirt\"></amp-img>\n        \n        <h2 class=\"title\">Every Shirt Plants 10 Trees</h2>\n        <p>Join our mission to protect the planet with sustainably-made apparel. With every Sasquatch Sends It T-Shirt purchase:</p>\n        \n        <div class=\"benefit-section\">\n            <div class=\"benefit-title\">🌍 Your Impact</div>\n            <ul>\n                <li>Captures carbon from the atmosphere</li>\n                <li>Restores vital ecosystems</li>\n                <li>Supports global communities</li>\n            </ul>\n        </div>\n\n        <a href=\"https://www.tentree.com/products/sasquatch-sends-it-t-shirt-crimson-meteorite-black\" class=\"cta-button\">Be the First to Own It</a>\n\n        <div class=\"trust-badges\">\n            <p>✅ Free Shipping & Returns<br>\n            🌱 100% Sustainable Materials<br>\n            ⭐ 4.9/5 (12,873 Reviews)</p>\n        </div>\n    </div>\n\n    <div class=\"footer\">\n        <p>© 2024 Tentree. All rights reserved.<br>\n        <a href=\"#\" style=\"color:#FFFF00; text-decoration:underline;\">Unsubscribe</a> | \n        <a href=\"https://www.tentree.com\" style=\"color:#FFFF00; text-decoration:underline;\">View Online</a></p>\n        <p>123 Forest Way, Green City, Earth</p>\n    </div>\n</div>\n</body>\n</html>",
+      "preheader": "Sasquatch Sends It T-Shirt is waiting for you - Shop now and enjoy!"
+    },
+    "amp_features": [
+      "amp4email",
+      "amp-img",
+      "responsive-layout",
+      "bold-&-vibrant",
+      "rag-inspired"
+    ],
+    "merge_tags": [
+      "firstName"
+    ],
+    "processed_images": [
+      {
+        "original_url": "https://storage.googleapis.com/markopolo-product-images/products/ZBHDGSiRxDDq/screenshot_0.jpg",
+        "optimized_url": "https://cdn.magpie.to/images/ZBHDGSiRxDDq/optimized-1761039119249.jpg",
+        "webp_url": "https://cdn.magpie.to/images/ZBHDGSiRxDDq/webp-1761039119249.webp",
+        "thumbnail_url": "https://cdn.magpie.to/images/ZBHDGSiRxDDq/thumb-1761039119249.webp",
+        "width": 436,
+        "height": 1200,
+        "format": "jpeg",
+        "size_bytes": 50431
+      }
+    ],
+    "media_assets": [
+      {
+        "type": "badge",
+        "url": "https://cdn.magpie.to/media/ZBHDGSiRxDDq/social-proof-1761039119751.png",
+        "width": 200,
+        "height": 60,
+        "format": "png"
+      }
+    ],
+    "enhanced_media": []
+  }
+]

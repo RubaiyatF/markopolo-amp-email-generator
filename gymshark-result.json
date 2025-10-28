@@ -1,0 +1,42 @@
+{
+  "campaign_id": "031a132a-97bc-4fae-bed5-ce5d91e05757",
+  "product": {
+    "name": "Gymshark Borg Zip Through Jacket",
+    "url": "https://uk.gymshark.com/products/gymshark-borg-zip-through-jacket-jackets-outerwear-black-aw25",
+    "image": "https://cdn.magpie.to/images/Yjb7kwpMnUqL/webp-1761029686211.webp",
+    "description": "THE PRE WARM UP Whether you're dashing from the car to the gym or facing the elements on rest day, these jackets have all the features you need to keep you warm through it all. Sturdy collar that keeps you warm Pockets with snap fastenings Woven patch pocket to the front Embroidered sharkhead logo"
+  },
+  "templates_generated": 3,
+  "variations": [
+    {
+      "name": "A",
+      "amp_url": "https://cdn.magpie.to/templates/031a132a-97bc-4fae-bed5-ce5d91e05757/A-1761029687068.amp.html",
+      "fallback_url": "https://cdn.magpie.to/templates/031a132a-97bc-4fae-bed5-ce5d91e05757/A-1761029687068.html",
+      "subject": "{{firstName}}, introducing Gymshark Borg Zip Through Jacket",
+      "style": "bold-modern"
+    },
+    {
+      "name": "B",
+      "amp_url": "https://cdn.magpie.to/templates/031a132a-97bc-4fae-bed5-ce5d91e05757/B-1761029687068.amp.html",
+      "fallback_url": "https://cdn.magpie.to/templates/031a132a-97bc-4fae-bed5-ce5d91e05757/B-1761029687068.html",
+      "subject": "🆕 Just launched: Gymshark Borg Zip Through Jacket is here!",
+      "style": "elegant-minimal"
+    },
+    {
+      "name": "C",
+      "amp_url": "https://cdn.magpie.to/templates/031a132a-97bc-4fae-bed5-ce5d91e05757/C-1761029687068.amp.html",
+      "fallback_url": "https://cdn.magpie.to/templates/031a132a-97bc-4fae-bed5-ce5d91e05757/C-1761029687068.html",
+      "subject": "✨ Be the first to own Gymshark Borg Zip Through Jacket",
+      "style": "bold-vibrant"
+    }
+  ],
+  "performance": {
+    "generation_time_ms": 61694,
+    "cost_usd": 0.0105
+  },
+  "preview_urls": [
+    "http://localhost:3000/api/v1/preview/322e0ef8-10fb-4286-9b90-1de053b0550b",
+    "http://localhost:3000/api/v1/preview/26ecbcd0-3727-4257-9338-96afcf3e2bae",
+    "http://localhost:3000/api/v1/preview/453a40c3-19ee-4a4c-bac4-d45f5fccaf3c"
+  ]
+}

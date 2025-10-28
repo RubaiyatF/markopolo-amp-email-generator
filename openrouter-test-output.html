@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@400;600&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f8f8;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        table {
+            border-spacing: 0;
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+
+        td {
+            padding: 0;
+        }
+
+        img {
+            border: 0;
+            -ms-interpolation-mode: bicubic;
+        }
+
+        .wrapper {
+            width: 100%;
+            table-layout: fixed;
+            background-color: #f8f8f8;
+            padding-bottom: 60px;
+        }
+
+        .main {
+            max-width: 600px;
+            width: 100%;
+            background-color: #ffffff;
+            margin: 0 auto;
+            border-spacing: 0;
+            color: #333333;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            line-height: 42px;
+            color: #333333;
+            text-align: center;
+            margin: 0;
+        }
+
+        .button {
+            background-color: #000000;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 24px;
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+        }
+
+        @media screen and (max-width: 600px) {
+            .main {
+                width: 100% !important;
+            }
+            .section-title {
+                font-size: 30px !important;
+                line-height: 36px !important;
+            }
+            .two-col, .three-col, .four-col {
+                width: 100% !important;
+                display: block !important;
+            }
+            .two-col img, .three-col img, .four-col img {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: auto !important;
+            }
+            .content-padding {
+                padding: 20px !important;
+            }
+            .flash-sale-text h1 {
+                font-size: 40px !important;
+                line-height: 44px !important;
+            }
+            .flash-sale-text p {
+                font-size: 16px !important;
+            }
+            .flash-sale-image {
+                width: 100% !important;
+                height: auto !important;
+            }
+            .flash-sale-container {
+                padding: 20px 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <center class="wrapper">
+        <table class="main" width="100%">
+
+            <!-- Just it. Section -->
+            <tr>
+                <td style="padding: 40px 0 20px;">
+                    <table width="100%">
+                        <tr>
+                            <td style="text-align: center; font-family: 'Playfair Display', serif; font-size: 28px; color: #333333;">
+                                Just it.
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Flash Sale Section -->
+            <tr>
+                <td style="background-color: #2953e3; padding: 0;">
+                    <table width="100%" class="flash-sale-container">
+                        <tr>
+                            <td style="text-align: center; padding: 40px 20px 0;">
+                                <h1 style="font-family: 'Playfair Display', serif; font-size: 60px; line-height: 60px; color: #ffffff; margin: 0;">
+                                    FLASH SALE
+                                </h1>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 20px 0 0; position: relative;">
+                                <img src="https://via.placeholder.com/600x400/FF6B35/FF6B35?text=image_placeholder" alt="image_placeholder" width="600" style="max-width: 100%; height: auto; display: block;" class="flash-sale-image">
+                                <!-- 50% OFF overlay -->
+                                <div style="position: absolute; top: 10%; right: 10%; background-color: #FFD700; border-radius: 50%; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; transform: rotate(15deg); text-align: center;">
+                                    <span style="font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; color: #000000; line-height: 1.2;">50%<br>OFF</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; padding: 20px 20px 10px;">
+                                <p style="font-family: 'Poppins', sans-serif; font-size: 12px; color: #ffffff; margin: 0; letter-spacing: 1px; text-transform: uppercase;">TODAY ONLY</p>
+                                <p style="font-family: 'Playfair Display', serif; font-size: 24px; line-height: 30px; color: #ffffff; margin: 10px 0 20px;">
+                                    Enjoy half off any item
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; padding: 0 20px 40px;">
+                                <a href="#" class="button">HURRY UP & SHOP</a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Discover New Collection Section -->
+            <tr>
+                <td style="padding: 60px 20px 40px;">
+                    <table width="100%">
+                        <tr>
+                            <td style="text-align: center;">
+                                <p style="font-family: 'Poppins', sans-serif; font-size: 12px; color: #666666; margin: 0 0 10px; letter-spacing: 1px; text-transform: uppercase;">FALL IN LOVE, FOR LESS</p>
+                                <h2 class="section-title">Discover our newest collection</h2>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Product Grid 1 -->
+            <tr>
+                <td style="padding: 0 20px;">
+                    <table width="100%">
+                        <tr>
+                            <td class="two-col" style="width: 50%; max-width: 280px; vertical-align: top; padding: 0 5px;">
+                                <img src="https://via.placeholder.com/280x420/E0E0E0/E0E0E0?text=image_placeholder" alt="image_placeholder" width="280" style="max-width: 100%; height: auto; display: block;">
+                            </td>
+                            <td class="two-col" style="width: 50%; max-width: 280px; vertical-align: top; padding: 0 5px;">
+                                <img src="https://via.placeholder.com/280x420/E0E0E0/E0E0E0?text=image_placeholder" alt="image_placeholder" width="280" style="max-width: 100%; height: auto; display: block;">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Product Grid 2 -->
+            <tr>
+                <td style="padding: 10px 20px 40px;">
+                    <table width="100%">
+                        <tr>
+                            <td class="two-col" style="width: 50%; max-width: 280px; vertical-align: top; padding: 0 5px;">
+                                <img src="https://via.placeholder.com/280x420/E0E0E0/E0E0E0?text=image_placeholder" alt="image_placeholder" width="280" style="max-width: 100%; height: auto; display: block;">
+                            </td>
+                            <td class="two-col" style="width: 50%; max-width: 280px; vertical-align: top; padding: 0 5px;">
+                                <img src="https://via.placeholder.com/280x420/E0E0E0/E0E0E0?text=image_placeholder" alt="image_placeholder" width="280" style="max-width: 100%; height: auto; display: block;">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Offer Details & Shop Button -->
+            <tr>
+                <td style="padding: 0 20px 40px;">
+                    <table width="100%">
+                        <tr>
+                            <td style="text-align: center;">
+                                <p style="font-family: 'Poppins', sans-serif; font-size: 10px; color: #666666; margin: 0 0 5px; line-height: 1.5;">
+                                    OFFER VALID TODAY ONLY.<br>DISCOUNT WILL BE AUTOMATICALLY APPLIED AT CHECKOUT.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; padding-top: 20px;">
+                                <a href="#" class="button">SHOP THE SALE NOW</a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <!-- We picked these for you Section -->
+            <tr>
+                <td style="padding: 60px 20px 40px;">
+                    <table width="100%">
+                        <tr>
+                            <td style="text-align: center;">
+                                <h2 class="section-title" style="font-size: 28px; line-height: 34px;">We picked these for you</h2>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Featured Products -->
+            <tr>
+                <td style="padding: 0 20px 40px;">
+                    <table width="100%">
+                        <tr>
+                            <td class="three-col" style="width: 33.33%; max-width: 180px; vertical-align: top; padding: 0 5px;">
+                                <img src="https://via.placeholder.com/180x240/FF6B35/FF6B35?text=image_placeholder" alt="image_placeholder" width="180" style="max-width: 100%; height: auto; display: block;">
+                            </td>
+                            <td class="three-col" style="width: 33.33%; max-width: 180px; vertical-align: top; padding: 0 5px;">
+                                <img src="https://via.placeholder.com/180x240/FF6B35/FF6B35?text=image_placeholder" alt="image_placeholder" width="180" style="max-width: 100%; height: auto; display: block;">
+                            </td>
+                            <td class="three-col" style="width: 33.33%; max-width: 180px; vertical-align: top; padding: 0 5px;">
+                                <img src="https://via.placeholder.com/180x240/FF6B35/FF6B35?text=image_placeholder" alt="image_placeholder" width="180" style="max-width: 100%; height: auto; display: block;">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Navigation Links -->
+            <tr>
+                <td style="padding: 20px 20px 40px; border-top: 1px solid #eeeeee;">
+                    <table width="100%">
+                        <tr>
+                            <td style="text-align: center; font-family: 'Poppins', sans-serif; font-size: 14px; color: #666666;">
+                                <a href="#" style="color: #666666; text-decoration: none; padding: 0 10px;">Sales</a>
+                                <a href="#" style="color: #666666; text-decoration: none; padding: 0 10px;">New</a>
+                                <a href="#" style="color: #666666; text-decoration: none; padding: 0 10px;">Dresses</a>
+                                <a href="#" style="color: #666666; text-decoration: none; padding: 0 10px;">Coats</a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Social Media & Footer -->
+            <tr>
+                <td style="padding: 40px 20px; border-top: 1px solid #eeeeee;">
+                    <table width="100%">
+                        <tr>
+                            <td style="text-align: center; font-family: 'Poppins', sans-serif; font-size: 12px; color: #666666; margin-bottom: 15px;">
+                                FOLLOW US @JUST
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; padding-top: 10px;">
+                                <a href="#" style="text-decoration: none; margin: 0 8px;">
+                                    <img src="https://via.placeholder.com/24x24/CCCCCC/CCCCCC?text=f" alt="image_placeholder" class="social-icon">
+                                </a>
+                                <a href="#" style="text-decoration: none; margin: 0 8px;">
+                                    <img src="https://via.placeholder.com/24x24/CCCCCC/CCCCCC?text=X" alt="image_placeholder" class="social-icon">
+                                </a>
+                                <a href="#" style="text-decoration: none; margin: 0 8px;">
+                                    <img src="https://via.placeholder.com/24x24/CCCCCC/CCCCCC?text=in" alt="image_placeholder" class="social-icon">
+                                </a>
+                                <a href="#" style="text-decoration: none; margin: 0 8px;">
+                                    <img src="https://via.placeholder.com/24x24/CCCCCC/CCCCCC?text=P" alt="image_placeholder" class="social-icon">
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; font-family: 'Poppins', sans-serif; font-size: 10px; color: #999999; padding-top: 30px; line-height: 1.6;">
+                                111 Main St.<br>Nashville, TN 37011, USA
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; font-family: 'Poppins', sans-serif; font-size: 10px; color: #999999; padding-top: 10px;">
+                                <a href="#" style="color: #999999; text-decoration: underline;">Unsubscribe</a> or <a href="#" style="color: #999999; text-decoration: underline;">Manage Preferences</a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+        </table>
+    </center>
+</body>
+</html>

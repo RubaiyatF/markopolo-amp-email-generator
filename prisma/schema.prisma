@@ -1,0 +1,243 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Company {
+  id                String    @id @default(uuid())
+  companyId         String    @unique @map("company_id")
+  name              String?
+  apiKey            String    @unique @map("api_key")
+  planType          String    @default("free") @map("plan_type")
+  creditsRemaining  Int       @default(1000) @map("credits_remaining")
+  rateLimitTier     String    @default("free") @map("rate_limit_tier")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  campaigns         Campaign[]
+
+  @@index([companyId])
+  @@index([planType])
+  @@map("companies")
+}
+
+model Campaign {
+  id                 String    @id @default(uuid())
+  internalId         String    @unique @map("internal_id")
+  companyId          String    @map("company_id")
+  userId             String    @map("user_id")
+  externalCampaignId String?   @map("external_campaign_id")
+  name               String?
+  type               String
+  status             String
+  totalProducts      Int?      @map("total_products")
+  metadata           Json?
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+  completedAt        DateTime? @map("completed_at")
+
+  company            Company   @relation(fields: [companyId], references: [companyId])
+  templates          Template[]
+  analytics          Analytic[]
+  generationLogs     GenerationLog[]
+
+  @@index([companyId])
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("campaigns")
+}
+
+model Template {
+  id             String    @id @default(uuid())
+  campaignId     String    @map("campaign_id")
+  variationName  String    @map("variation_name")
+  ampUrl         String    @map("amp_url")
+  fallbackUrl    String    @map("fallback_url")
+  content        Json
+  mergeTags      String[]  @map("merge_tags")
+  ampFeatures    String[]  @map("amp_features")
+  metadata       Json?
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  campaign       Campaign  @relation(fields: [campaignId], references: [id])
+  analytics      Analytic[]
+
+  @@index([campaignId])
+  @@index([createdAt])
+  @@map("templates")
+}
+
+model GenerationLog {
+  id                String    @id @default(uuid())
+  companyId         String    @map("company_id")
+  userId            String    @map("user_id")
+  campaignId        String?   @map("campaign_id")
+  generationType    String    @map("generation_type")
+  productsProcessed Int       @map("products_processed")
+  costUsd           Decimal   @map("cost_usd") @db.Decimal(10, 6)
+  durationMs        Int       @map("duration_ms")
+  success           Boolean
+  errorMessage      String?   @map("error_message")
+  createdAt         DateTime  @default(now()) @map("created_at")
+
+  campaign          Campaign? @relation(fields: [campaignId], references: [id])
+
+  @@index([companyId])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([success])
+  @@map("generation_logs")
+}
+
+model Analytic {
+  id          String    @id @default(uuid())
+  campaignId  String    @map("campaign_id")
+  templateId  String?   @map("template_id")
+  eventType   String    @map("event_type")
+  eventData   Json      @map("event_data")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  campaign    Campaign  @relation(fields: [campaignId], references: [id])
+  template    Template? @relation(fields: [templateId], references: [id])
+
+  @@index([campaignId])
+  @@index([templateId])
+  @@index([eventType])
+  @@index([createdAt])
+  @@map("analytics")
+}
+
+model PersonalizationHistory {
+  id                  String    @id @default(uuid())
+  companyId           String    @map("company_id")
+  userId              String    @map("user_id")
+  patterns            Json
+  performanceMetrics  Json      @map("performance_metrics")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+
+  @@unique([companyId, userId])
+  @@index([companyId])
+  @@index([userId])
+  @@map("personalization_history")
+}
+
+model InteractiveTemplate {
+  id                    String    @id @default(uuid())
+  templateId            String    @unique @map("template_id")
+  productId             String    @map("product_id")
+  campaignId            String?   @map("campaign_id")
+  companyId             String    @map("company_id")
+  ampHtml               String    @map("amp_html") @db.Text
+  fallbackHtml          String    @map("fallback_html") @db.Text
+  ampComponents         String[]  @map("amp_components")
+  interactiveFeatures   String[]  @map("interactive_features")
+  stateSchema           Json      @map("state_schema")
+  apiEndpoints          Json?     @map("api_endpoints")
+  productData           Json      @map("product_data")
+  brandStyling          Json      @map("brand_styling")
+  validationResult      Json      @map("validation_result")
+  generationCost        Decimal   @map("generation_cost") @db.Decimal(10, 6)
+  agentVersion          String    @map("agent_version")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  enhancedImages        EnhancedImage[]
+  brandGuidelines       BrandGuidelines?
+
+  @@index([productId])
+  @@index([campaignId])
+  @@index([companyId])
+  @@index([createdAt])
+  @@map("interactive_templates")
+}
+
+model EnhancedImage {
+  id                    String    @id @default(uuid())
+  interactiveTemplateId String    @map("interactive_template_id")
+  originalUrl           String    @map("original_url")
+  enhancedUrl           String    @map("enhanced_url")
+  imageType             String    @map("image_type") // hero, gallery, lifestyle, detail
+  backgroundRemoved     Boolean   @default(false) @map("background_removed")
+  backgroundStyle       String?   @map("background_style") // professional, lifestyle, seasonal, luxury
+  labels                Json?     // Array of applied labels
+  dimensions            Json      // {width, height}
+  altText               String?   @map("alt_text")
+  processingCost        Decimal   @map("processing_cost") @db.Decimal(10, 6)
+  createdAt             DateTime  @default(now()) @map("created_at")
+
+  interactiveTemplate   InteractiveTemplate @relation(fields: [interactiveTemplateId], references: [id], onDelete: Cascade)
+
+  @@index([interactiveTemplateId])
+  @@index([imageType])
+  @@map("enhanced_images")
+}
+
+model BrandGuidelines {
+  id                    String    @id @default(uuid())
+  interactiveTemplateId String    @unique @map("interactive_template_id")
+  domain                String
+  primaryColor          String    @map("primary_color")
+  secondaryColors       String[]  @map("secondary_colors")
+  accentColor           String    @map("accent_color")
+  headingFont           String    @map("heading_font")
+  bodyFont              String    @map("body_font")
+  logoUrl               String?   @map("logo_url")
+  tone                  String    // formal, casual, playful, professional, luxury
+  spacing               String    // compact, comfortable, spacious
+  confidence            Int       // 0-100
+  analyzedPages         String[]  @map("analyzed_pages")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  interactiveTemplate   InteractiveTemplate @relation(fields: [interactiveTemplateId], references: [id], onDelete: Cascade)
+
+  @@index([domain])
+  @@index([createdAt])
+  @@map("brand_guidelines")
+}
+
+model CartSelection {
+  id                String    @id @default(uuid())
+  sessionId         String    @unique @map("session_id")
+  productId         String    @map("product_id")
+  variantId         String?   @map("variant_id")
+  color             String?
+  size              String?
+  quantity          Int
+  customizations    Json?
+  productUrl        String    @map("product_url")
+  storeDomain       String    @map("store_domain")
+  platform          String?   // shopify, woocommerce, magento, custom
+  companyId         String    @map("company_id")
+  expiresAt         DateTime  @map("expires_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+
+  @@index([sessionId])
+  @@index([companyId])
+  @@index([expiresAt])
+  @@map("cart_selections")
+}
+
+model UrlShortener {
+  id            String    @id @default(uuid())
+  shortCode     String    @unique @map("short_code")
+  selections    Json
+  storeDomain   String    @map("store_domain")
+  companyId     String    @map("company_id")
+  expiresAt     DateTime  @map("expires_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@index([shortCode])
+  @@index([companyId])
+  @@index([expiresAt])
+  @@map("url_shorteners")
+}

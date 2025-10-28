@@ -1,0 +1,931 @@
+openapi: 3.0.0
+info:
+  title: AMP Email Generation API Platform
+  version: 1.0.0
+  description: |
+    AI-powered AMP email template generation API with personalization, analytics, and integration support.
+    
+    ## Features
+    - Generate AMP-compliant email templates from product URLs or data
+    - Bulk batch processing with async job support
+    - Personalization engine with merge tags
+    - Real-time analytics and cost tracking
+    - ESP integration (SendGrid, Resend, AWS SES)
+    - Third-party AI agent compatibility
+    
+    ## Authentication
+    All endpoints require API Key authentication via Bearer token in the Authorization header.
+    
+  contact:
+    name: AMP Email Platform API Support
+    url: https://amp-platform.com/support
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.amp-platform.com
+    description: Production server
+  - url: https://staging-api.amp-platform.com
+    description: Staging server
+  - url: http://localhost:3000
+    description: Local development server
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: Generation
+    description: Template generation endpoints
+  - name: Batch Processing
+    description: Bulk campaign operations
+  - name: Templates
+    description: Template retrieval and management
+  - name: Personalization
+    description: Merge tag and personalization features
+  - name: Third-Party
+    description: Third-party AI agent compatible endpoints
+  - name: Use Cases
+    description: Use-case specific endpoints
+  - name: Analytics
+    description: Metrics and cost tracking
+  - name: Health
+    description: System health and monitoring
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      description: Check API health status
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /api/v1/generate:
+    post:
+      summary: Generate AMP email templates
+      description: |
+        Generate AMP-compliant email templates from product URLs or product data.
+        Supports multiple variations and personalization merge tags.
+      tags:
+        - Generation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateRequest'
+            examples:
+              with_urls:
+                summary: Generate from product URLs
+                value:
+                  product_urls:
+                    - https://example.com/product/1
+                    - https://example.com/product/2
+                  campaign_context:
+                    type: promotional
+                    goal: conversion
+                    urgency: high
+                  options:
+                    variations: 3
+                    preserve_merge_tags: true
+              with_data:
+                summary: Generate from product data
+                value:
+                  products:
+                    - name: Premium Headphones
+                      price: 199.99
+                      currency: USD
+                      image: https://example.com/headphones.jpg
+                      url: https://example.com/headphones
+                  campaign_context:
+                    type: product_launch
+                    goal: acquisition
+                  user_context:
+                    firstName: John
+                    email: john@example.com
+      responses:
+        '200':
+          description: Templates generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+
+  /api/v1/batch/campaign:
+    post:
+      summary: Create batch campaign
+      description: |
+        Process large-scale campaigns with up to 10,000 products asynchronously.
+        Returns a job ID for tracking progress.
+      tags:
+        - Batch Processing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchCampaignRequest'
+      responses:
+        '202':
+          description: Batch job created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                    format: uuid
+                  status:
+                    type: string
+                    enum: [queued, processing]
+                  tracking_url:
+                    type: string
+                  estimated_time:
+                    type: string
+                  webhook_url:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/templates/{id}:
+    get:
+      summary: Get template details
+      description: Retrieve complete template details including content, URLs, and metadata
+      tags:
+        - Templates
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Template ID
+      responses:
+        '200':
+          description: Template found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/personalize:
+    post:
+      summary: Personalize template
+      description: Apply recipient-specific data to template merge tags
+      tags:
+        - Personalization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalizeRequest'
+      responses:
+        '200':
+          description: Template personalized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  personalized_html:
+                    type: string
+                  merge_tags_applied:
+                    type: integer
+                  missing_fields:
+                    type: array
+                    items:
+                      type: string
+
+  /api/v1/preview/{id}:
+    get:
+      summary: Preview template
+      description: Get browser-viewable preview of template
+      tags:
+        - Templates
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Preview HTML
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /api/v1/ml-compatible/generate-amp-content:
+    post:
+      summary: Generate content (ML agent compatible)
+      description: Third-party AI agent compatible endpoint
+      tags:
+        - Third-Party
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MLCompatibleRequest'
+      responses:
+        '200':
+          description: Content generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MLCompatibleResponse'
+
+  /api/v1/action-tree/generate-content:
+    post:
+      summary: Generate multi-node workflow content
+      description: Generate content for action tree workflow nodes
+      tags:
+        - Third-Party
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MLCompatibleRequest'
+      responses:
+        '200':
+          description: Node content generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MLCompatibleResponse'
+
+  /api/v1/use-cases/abandoned-cart/campaign:
+    post:
+      summary: Abandoned cart recovery campaign
+      description: Generate cart recovery emails with urgency and discount optimization
+      tags:
+        - Use Cases
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AbandonedCartRequest'
+      responses:
+        '200':
+          description: Cart recovery campaign created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campaign_id:
+                    type: string
+                  urgency_level:
+                    type: string
+                  discount_offered:
+                    type: number
+                  templates:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Template'
+
+  /api/v1/use-cases/product-launch/campaign:
+    post:
+      summary: Product launch campaign
+      description: Generate product announcement emails
+      tags:
+        - Use Cases
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductLaunchRequest'
+      responses:
+        '200':
+          description: Product launch campaign created
+
+  /api/v1/use-cases/price-drop/alert:
+    post:
+      summary: Price drop alert
+      description: Generate price drop notification emails
+      tags:
+        - Use Cases
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceDropRequest'
+      responses:
+        '200':
+          description: Price drop alert created
+
+  /api/v1/use-cases/back-in-stock/notify:
+    post:
+      summary: Back in stock notification
+      description: Generate back-in-stock waitlist alerts
+      tags:
+        - Use Cases
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BackInStockRequest'
+      responses:
+        '200':
+          description: Back in stock notification created
+
+  /api/v1/analytics/campaign/{campaignId}:
+    get:
+      summary: Get campaign analytics
+      description: Retrieve analytics and cost metrics for a specific campaign
+      tags:
+        - Analytics
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Campaign analytics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campaign_id:
+                    type: string
+                  total_cost:
+                    type: number
+                  products_processed:
+                    type: integer
+                  templates_created:
+                    type: integer
+                  generation_time_ms:
+                    type: integer
+
+  /api/v1/analytics/company/{companyId}:
+    get:
+      summary: Get company analytics
+      description: Retrieve aggregated analytics for a company
+      tags:
+        - Analytics
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Company analytics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  company_id:
+                    type: string
+                  total_campaigns:
+                    type: integer
+                  total_cost:
+                    type: number
+                  avg_cost_per_campaign:
+                    type: number
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API_KEY
+      description: API key obtained from platform dashboard
+
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          oneOf:
+            - type: string
+            - type: number
+        currency:
+          type: string
+          example: USD
+        image:
+          type: string
+          format: uri
+        url:
+          type: string
+          format: uri
+        description:
+          type: string
+        brand:
+          type: string
+
+    CampaignContext:
+      type: object
+      required:
+        - type
+        - goal
+      properties:
+        type:
+          type: string
+          enum: [abandoned_cart, promotional, product_launch, price_drop, back_in_stock]
+        goal:
+          type: string
+          enum: [acquisition, retention, engagement, conversion]
+        urgency:
+          type: string
+          enum: [low, medium, high]
+        discount:
+          type: number
+
+    UserContext:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        customFields:
+          type: object
+          additionalProperties: true
+
+    BrandContext:
+      type: object
+      properties:
+        voice:
+          type: string
+        colors:
+          type: array
+          items:
+            type: string
+        logo:
+          type: string
+          format: uri
+        companyName:
+          type: string
+
+    GenerationOptions:
+      type: object
+      properties:
+        variations:
+          type: integer
+          minimum: 1
+          maximum: 5
+          default: 3
+        preserve_merge_tags:
+          type: boolean
+          default: true
+
+    GenerateRequest:
+      type: object
+      required:
+        - campaign_context
+      properties:
+        product_urls:
+          type: array
+          items:
+            type: string
+            format: uri
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        campaign_context:
+          $ref: '#/components/schemas/CampaignContext'
+        user_context:
+          $ref: '#/components/schemas/UserContext'
+        brand_context:
+          $ref: '#/components/schemas/BrandContext'
+        options:
+          $ref: '#/components/schemas/GenerationOptions'
+      oneOf:
+        - required: [product_urls]
+        - required: [products]
+
+    Template:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        campaign_id:
+          type: string
+          format: uuid
+        variation_name:
+          type: string
+        amp_url:
+          type: string
+          format: uri
+        fallback_url:
+          type: string
+          format: uri
+        content:
+          type: object
+          properties:
+            subject:
+              type: string
+            preheader:
+              type: string
+            body:
+              type: string
+        merge_tags:
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string
+          format: date-time
+
+    GenerateResponse:
+      type: object
+      properties:
+        campaign_id:
+          type: string
+          format: uuid
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/Template'
+        preview_urls:
+          type: array
+          items:
+            type: object
+            properties:
+              variation:
+                type: string
+              url:
+                type: string
+        integration_code:
+          type: object
+          properties:
+            sendgrid:
+              type: string
+            resend:
+              type: string
+        cost:
+          type: object
+          properties:
+            ai_generation:
+              type: number
+            product_scraping:
+              type: number
+            cdn_delivery:
+              type: number
+            total:
+              type: number
+        metadata:
+          type: object
+          properties:
+            generation_time_ms:
+              type: integer
+            products_processed:
+              type: integer
+            variations_created:
+              type: integer
+
+    BatchCampaignRequest:
+      type: object
+      required:
+        - campaign_name
+        - product_urls
+        - campaign_context
+      properties:
+        campaign_name:
+          type: string
+        product_urls:
+          type: array
+          items:
+            type: string
+            format: uri
+          maxItems: 10000
+        recipient_segments:
+          type: array
+          items:
+            type: object
+        campaign_context:
+          $ref: '#/components/schemas/CampaignContext'
+        max_concurrent:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 10
+        chunk_size:
+          type: integer
+          minimum: 10
+          maximum: 500
+          default: 100
+        webhook_url:
+          type: string
+          format: uri
+
+    PersonalizeRequest:
+      type: object
+      required:
+        - template_id
+        - recipient_data
+      properties:
+        template_id:
+          type: string
+          format: uuid
+        recipient_data:
+          type: object
+          additionalProperties: true
+        preview_mode:
+          type: boolean
+          default: false
+
+    ActionTreeNode:
+      type: object
+      required:
+        - id
+        - description
+        - nodeType
+        - indication
+        - target
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        nodeType:
+          type: string
+          enum: [action, condition, wait]
+        indication:
+          type: string
+          enum: [email, sms, push]
+        target:
+          type: array
+          items:
+            type: string
+        nodeContext:
+          type: object
+          properties:
+            purpose:
+              type: string
+            sequence:
+              type: integer
+            followUpNodes:
+              type: array
+              items:
+                type: string
+
+    MLCompatibleRequest:
+      type: object
+      required:
+        - companyId
+        - userId
+        - channel
+        - campaignContext
+      properties:
+        companyId:
+          type: string
+        userId:
+          type: string
+        channel:
+          type: string
+          enum: [email]
+        campaignContext:
+          $ref: '#/components/schemas/CampaignContext'
+        actionTreeNodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActionTreeNode'
+        userContext:
+          $ref: '#/components/schemas/UserContext'
+        brandContext:
+          $ref: '#/components/schemas/BrandContext'
+        productContext:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        contentHistory:
+          type: object
+        feedback:
+          type: string
+
+    MLCompatibleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            campaignId:
+              type: string
+            nodeContents:
+              type: array
+              items:
+                type: object
+            templates:
+              type: array
+              items:
+                $ref: '#/components/schemas/Template'
+        metadata:
+          type: object
+
+    AbandonedCartRequest:
+      type: object
+      required:
+        - cart_id
+        - user_email
+        - product_urls
+        - abandoned_at
+        - cart_value
+        - currency
+      properties:
+        cart_id:
+          type: string
+        user_email:
+          type: string
+          format: email
+        product_urls:
+          type: array
+          items:
+            type: string
+            format: uri
+        abandoned_at:
+          type: string
+          format: date-time
+        cart_value:
+          type: number
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+        trigger_after_hours:
+          type: number
+          default: 2
+        discount_strategy:
+          type: string
+          enum: [auto, fixed, percentage, none]
+          default: none
+
+    ProductLaunchRequest:
+      type: object
+      required:
+        - product_urls
+        - launch_date
+      properties:
+        product_urls:
+          type: array
+          items:
+            type: string
+            format: uri
+        launch_date:
+          type: string
+          format: date-time
+        early_access:
+          type: boolean
+          default: false
+        highlight_features:
+          type: array
+          items:
+            type: string
+        pre_order_enabled:
+          type: boolean
+          default: false
+
+    PriceDropRequest:
+      type: object
+      required:
+        - product_url
+        - original_price
+        - new_price
+      properties:
+        product_url:
+          type: string
+          format: uri
+        original_price:
+          type: number
+        new_price:
+          type: number
+        discount_percentage:
+          type: number
+        limited_time:
+          type: boolean
+          default: false
+        stock_level:
+          type: string
+          enum: [low, medium, high]
+
+    BackInStockRequest:
+      type: object
+      required:
+        - product_url
+        - waitlist_id
+      properties:
+        product_url:
+          type: string
+          format: uri
+        waitlist_id:
+          type: string
+        stock_quantity:
+          type: number
+        notify_urgency:
+          type: boolean
+          default: false
+        related_products:
+          type: array
+          items:
+            type: string
+            format: uri
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        code:
+          type: string
+        details:
+          type: object
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: Validation Error
+            message: Either product_urls or products must be provided
+            code: VALIDATION_ERROR
+
+    Unauthorized:
+      description: Invalid or missing API key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: Unauthorized
+            message: Invalid API key
+            code: INVALID_API_KEY
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: Not Found
+            message: Template not found
+            code: NOT_FOUND
+
+    RateLimitExceeded:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: Rate Limit Exceeded
+            message: You have exceeded your rate limit
+            code: RATE_LIMIT_EXCEEDED
